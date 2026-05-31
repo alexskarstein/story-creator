@@ -184,11 +184,11 @@
     <div class="field">
       <div class="pill-group">
         <div class="pill-option">
-          <input type="radio" name="op" id="opVenta" value="VENTA" checked onchange="debouncedPreview()">
+          <input type="checkbox" id="opVenta" checked onchange="debouncedPreview()">
           <label for="opVenta">🤝 Venta</label>
         </div>
         <div class="pill-option">
-          <input type="radio" name="op" id="opAlq" value="ALQUILER" onchange="debouncedPreview()">
+          <input type="checkbox" id="opAlq" onchange="debouncedPreview()">
           <label for="opAlq">🔑 Alquiler</label>
         </div>
       </div>
@@ -488,7 +488,9 @@ function getData() {
   const hideDets = ['Terreno'].includes(tipo);
 
   return {
-    op:       document.querySelector('input[name=op]:checked')?.value || 'VENTA',
+    op:       (document.getElementById('opVenta').checked && document.getElementById('opAlq').checked)
+                ? 'VENTA / ALQUILER'
+                : document.getElementById('opAlq').checked ? 'ALQUILER' : 'VENTA',
     tipo,
     distrito: document.getElementById('distrito').value.trim() || 'Lima',
     moneda:   document.getElementById('moneda').value,
@@ -563,15 +565,17 @@ function placeholderBg(ctx, x, y, w, h) {
 }
 
 function opBadge(ctx, op, x, y) {
-  const label = op === 'VENTA' ? 'EN VENTA' : 'EN ALQUILER';
-  const bgCol  = op === 'VENTA' ? GOLD : '#2A7A50';
+  const both   = op === 'VENTA / ALQUILER';
+  const label  = both ? 'VENTA / ALQUILER' : op === 'VENTA' ? 'EN VENTA' : 'EN ALQUILER';
+  const bgCol  = both ? NAVY : op === 'VENTA' ? GOLD : '#2A7A50';
+  const txtCol = both ? GOLD : op === 'VENTA' ? NAVY : WHITE;
   ctx.font = `700 34px ${FONT_SANS}`;
-  const tw  = ctx.measureText(label).width;
-  const bw  = tw + 72;
+  const bw = ctx.measureText(label).width + 72;
   ctx.fillStyle = bgCol;
   rrect(ctx, x, y, bw, 76, 38);
   ctx.fill();
-  ctx.fillStyle = op === 'VENTA' ? NAVY : WHITE;
+  if (both) { ctx.strokeStyle = GOLD; ctx.lineWidth = 3; rrect(ctx, x, y, bw, 76, 38); ctx.stroke(); }
+  ctx.fillStyle = txtCol;
   ctx.textAlign = 'left';
   ctx.fillText(label, x + 36, y + 52);
   return bw;
