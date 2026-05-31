@@ -9,89 +9,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --navy:   #1B2A4A;
-      --gold:   #D4AF37;
-      --cream:  #F5EDE0;
-      --white:  #FFFFFF;
-      --text:   #1A1A1A;
-      --muted:  #888;
-      --border: #E4D9CC;
-      --radius: 14px;
+      --navy: #1B2A4A; --gold: #D4AF37; --cream: #F5EDE0;
+      --white: #FFFFFF; --text: #1A1A1A; --muted: #888;
+      --border: #E4D9CC; --radius: 14px;
     }
+    body { font-family: 'Poppins', sans-serif; background: var(--cream); color: var(--text); min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--cream);
-      color: var(--text);
-      min-height: 100dvh;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ── Header ─────────────────────────────────────────── */
-    .header {
-      background: var(--navy);
-      color: var(--white);
-      padding: 14px 20px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      box-shadow: 0 2px 16px rgba(0,0,0,.25);
-    }
+    .header { background: var(--navy); color: var(--white); padding: 14px 20px; text-align: center; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 16px rgba(0,0,0,.25); }
     .header h1 { font-family: 'Playfair Display', serif; font-size: 19px; letter-spacing: .4px; }
     .header p  { font-size: 10px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
 
-    /* ── Container ──────────────────────────────────────── */
     .page { max-width: 480px; margin: 0 auto; padding: 14px 14px 40px; }
 
-    /* ── Cards ──────────────────────────────────────────── */
     .card { background: var(--white); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 10px rgba(0,0,0,.07); }
     .card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--navy); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--cream); }
 
-    /* ── Preview ────────────────────────────────────────── */
+    /* Preview */
     .preview-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     #previewCanvas { border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.18); display: block; width: 168px; height: 298px; background: var(--navy); }
-    .tpl-row { display: flex; gap: 8px; }
-    .tpl-btn { flex: 1; padding: 9px 6px; border: 2px solid var(--border); border-radius: 10px; background: var(--white); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .18s; text-align: center; }
+    .tpl-row { display: flex; gap: 8px; width: 100%; }
+    .tpl-btn { flex: 1; padding: 9px 4px; border: 2px solid var(--border); border-radius: 10px; background: var(--white); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .18s; text-align: center; }
     .tpl-btn.active { border-color: var(--gold); background: #FFFBF0; color: var(--navy); font-weight: 700; }
 
-    /* ── Photo upload ───────────────────────────────────── */
+    /* Photo upload */
     .upload-zone { border: 2px dashed var(--gold); border-radius: 12px; padding: 22px 12px; text-align: center; background: #FFFBF0; cursor: pointer; transition: background .15s; }
+    .upload-zone.small { padding: 14px 12px; }
     .upload-zone:active { background: #FFF5D6; }
     .upload-icon { font-size: 32px; }
     .upload-zone strong { display: block; font-size: 14px; color: var(--navy); margin: 6px 0 3px; }
     .upload-zone span { font-size: 12px; color: var(--muted); }
-    #photoInput { display: none; }
+    #photoInput, #logoInput { display: none; }
 
-    /* Thumbnails strip */
     .thumb-strip { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
     .thumb-strip::-webkit-scrollbar { display: none; }
     .thumb-item { position: relative; flex-shrink: 0; }
     .thumb-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; display: block; border: 2px solid transparent; }
     .thumb-item img.active-thumb { border-color: var(--gold); }
-    .thumb-remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #E53935; color: white; border: none; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; font-weight: 700; }
+    .thumb-remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #E53935; color: white; border: none; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 
-    /* Multi-mode selector */
     .mode-row { display: flex; gap: 8px; margin-top: 12px; }
     .mode-btn { flex: 1; padding: 10px 8px; border: 2px solid var(--border); border-radius: 10px; background: var(--white); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .18s; text-align: center; }
     .mode-btn.active { border-color: var(--navy); background: var(--navy); color: var(--white); font-weight: 600; }
     .mode-hint { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; line-height: 1.4; }
 
-    /* Position slider */
     .slider-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
     .slider-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
     input[type=range] { flex: 1; accent-color: var(--navy); height: 4px; }
 
-    /* ── Radio pills ────────────────────────────────────── */
+    /* Logo preview */
+    #logoThumb { max-height: 70px; max-width: 100%; display: none; margin-top: 10px; border-radius: 6px; object-fit: contain; }
+
+    /* Radio/checkbox pills */
     .pill-group { display: flex; gap: 8px; }
     .pill-option { flex: 1; position: relative; }
     .pill-option input { position: absolute; opacity: 0; width: 0; }
     .pill-option label { display: block; text-align: center; padding: 10px 8px; border: 2px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 500; color: #666; cursor: pointer; transition: all .18s; }
     .pill-option input:checked + label { border-color: var(--navy); background: var(--navy); color: var(--white); font-weight: 600; }
 
-    /* ── Form fields ────────────────────────────────────── */
+    /* Form fields */
     .field { margin-bottom: 12px; }
     .field:last-child { margin-bottom: 0; }
     label.lbl { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #666; margin-bottom: 6px; }
@@ -103,28 +79,23 @@
     .currency { width: 68px; flex-shrink: 0; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 6px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; text-align: center; background: var(--white); -webkit-appearance: none; color: var(--navy); }
     .currency:focus { outline: none; border-color: var(--gold); }
 
-    /* ── Stats grid (2×2) ───────────────────────────────── */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-box { text-align: center; }
     .stat-box .lbl { text-align: center; }
     .stat-inp { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 4px; font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; color: var(--navy); text-align: center; background: var(--white); -webkit-appearance: none; }
     .stat-inp:focus { outline: none; border-color: var(--gold); }
 
-    /* ── Checkboxes ─────────────────────────────────────── */
     .checks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
     .chk-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: all .15s; }
     .chk-item input { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; }
     .chk-item label { font-size: 12px; color: #555; cursor: pointer; line-height: 1.2; }
     .chk-item:has(input:checked) { border-color: var(--navy); background: #EEF2FF; }
 
-    /* ── Download button ────────────────────────────────── */
-    .dl-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #E8C967 100%); color: var(--navy); border: none; border-radius: 14px; padding: 18px; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 18px rgba(212,175,55,.35); transition: all .18s; margin-bottom: 12px; }
+    .dl-btn { width: 100%; background: linear-gradient(135deg, var(--gold), #E8C967); color: var(--navy); border: none; border-radius: 14px; padding: 18px; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 18px rgba(212,175,55,.35); transition: all .18s; margin-bottom: 12px; }
     .dl-btn:active { transform: scale(.97); }
 
-    /* ── Toast ──────────────────────────────────────────── */
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy); color: var(--white); padding: 12px 22px; border-radius: 100px; font-size: 13px; font-weight: 500; z-index: 999; transition: transform .28s ease; white-space: nowrap; pointer-events: none; }
     .toast.show { transform: translateX(-50%) translateY(0); }
-
     #mainCanvas { display: none; }
   </style>
 </head>
@@ -137,20 +108,31 @@
 
 <div class="page">
 
-  <!-- ── PREVIEW ─────────────────────────────── -->
+  <!-- PREVIEW -->
   <div class="card">
     <div class="card-title">Vista previa</div>
     <div class="preview-wrap">
       <canvas id="previewCanvas"></canvas>
       <div class="tpl-row" id="tplRow">
-        <button class="tpl-btn active" onclick="setTpl(1)">✨ Elegante</button>
-        <button class="tpl-btn"        onclick="setTpl(2)">🔲 Moderno</button>
+        <button class="tpl-btn active" onclick="setTpl(1)">🏠 Clásico</button>
+        <button class="tpl-btn"        onclick="setTpl(2)">📋 Editorial</button>
         <button class="tpl-btn"        onclick="setTpl(3)">⚡ Impacto</button>
       </div>
     </div>
   </div>
 
-  <!-- ── FOTO ───────────────────────────────── -->
+  <!-- LOGO -->
+  <div class="card">
+    <div class="card-title">🎨 Logo de la agencia</div>
+    <div class="upload-zone small" onclick="document.getElementById('logoInput').click()">
+      <strong>Toca para subir el logo</strong>
+      <span>PNG con fondo transparente · recomendado</span>
+    </div>
+    <input type="file" id="logoInput" accept="image/*" onchange="onLogo(event)">
+    <img id="logoThumb" alt="logo">
+  </div>
+
+  <!-- FOTO -->
   <div class="card">
     <div class="card-title">📸 Fotos de la propiedad</div>
     <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
@@ -159,11 +141,7 @@
       <span>Puedes seleccionar varias a la vez · JPG · PNG · HEIC</span>
     </div>
     <input type="file" id="photoInput" accept="image/*" multiple onchange="onPhoto(event)">
-
-    <!-- Thumbnails -->
     <div class="thumb-strip" id="thumbStrip" style="display:none"></div>
-
-    <!-- Multi-mode selector (shown when ≥2 photos) -->
     <div id="multiModeRow" style="display:none">
       <div class="mode-row">
         <button class="mode-btn active" id="btnSlides"  onclick="setMode('slides')">📑 Un slide por foto</button>
@@ -171,14 +149,13 @@
       </div>
       <p class="mode-hint" id="modeHint"></p>
     </div>
-
     <div class="slider-row" id="posRow" style="display:none">
       <span class="slider-label">Posición foto</span>
       <input type="range" id="photoPos" min="0" max="100" value="50" oninput="debouncedPreview()">
     </div>
   </div>
 
-  <!-- ── OPERACIÓN ──────────────────────────── -->
+  <!-- OPERACIÓN -->
   <div class="card">
     <div class="card-title">🏷️ Operación y tipo</div>
     <div class="field">
@@ -207,7 +184,7 @@
     </div>
   </div>
 
-  <!-- ── UBICACIÓN & PRECIO ─────────────────── -->
+  <!-- UBICACIÓN & PRECIO -->
   <div class="card">
     <div class="card-title">📍 Ubicación y precio</div>
     <div class="field">
@@ -226,30 +203,18 @@
     </div>
   </div>
 
-  <!-- ── DETALLES ───────────────────────────── -->
-  <div class="card" id="detallesCard">
+  <!-- DETALLES -->
+  <div class="card">
     <div class="card-title">🔢 Detalles</div>
     <div class="stats-grid">
-      <div class="stat-box">
-        <label class="lbl" for="dorm">🛏 Dorm.</label>
-        <input class="stat-inp" type="number" id="dorm" value="3" min="0" max="20" oninput="debouncedPreview()">
-      </div>
-      <div class="stat-box">
-        <label class="lbl" for="banos">🚿 Baños</label>
-        <input class="stat-inp" type="number" id="banos" value="2" min="0" max="20" oninput="debouncedPreview()">
-      </div>
-      <div class="stat-box">
-        <label class="lbl" for="area">📐 m²</label>
-        <input class="stat-inp" type="number" id="area" value="120" min="0" oninput="debouncedPreview()">
-      </div>
-      <div class="stat-box">
-        <label class="lbl" for="estac">🚗 Estac.</label>
-        <input class="stat-inp" type="number" id="estac" value="1" min="0" max="10" oninput="debouncedPreview()">
-      </div>
+      <div class="stat-box"><label class="lbl" for="dorm">🛏 Dorm.</label><input class="stat-inp" type="number" id="dorm" value="3" min="0" max="20" oninput="debouncedPreview()"></div>
+      <div class="stat-box"><label class="lbl" for="banos">🚿 Baños</label><input class="stat-inp" type="number" id="banos" value="2" min="0" max="20" oninput="debouncedPreview()"></div>
+      <div class="stat-box"><label class="lbl" for="area">📐 m²</label><input class="stat-inp" type="number" id="area" value="120" min="0" oninput="debouncedPreview()"></div>
+      <div class="stat-box"><label class="lbl" for="estac">🚗 Estac.</label><input class="stat-inp" type="number" id="estac" value="1" min="0" max="10" oninput="debouncedPreview()"></div>
     </div>
   </div>
 
-  <!-- ── CARACTERÍSTICAS ───────────────────── -->
+  <!-- CARACTERÍSTICAS -->
   <div class="card">
     <div class="card-title">✨ Características</div>
     <div class="checks-grid">
@@ -266,7 +231,7 @@
     </div>
   </div>
 
-  <!-- ── CONTACTO ───────────────────────────── -->
+  <!-- CONTACTO -->
   <div class="card">
     <div class="card-title">📱 Contacto</div>
     <div class="field">
@@ -274,738 +239,594 @@
       <input class="inp" type="tel" id="wp" placeholder="+51 999 999 999" oninput="debouncedPreview()">
     </div>
     <div class="field">
-      <label class="lbl" for="desc">Descripción corta (opcional)</label>
-      <textarea class="inp" id="desc" placeholder="Ej: Excelente ubicación, 2 cuadras del Malecón…" oninput="debouncedPreview()"></textarea>
+      <label class="lbl" for="desc">Tagline / descripción (opcional)</label>
+      <textarea class="inp" id="desc" placeholder="Ej: Perfecto para inversión · Vista al mar y parque" oninput="debouncedPreview()"></textarea>
     </div>
   </div>
 
-  <!-- ── DOWNLOAD ───────────────────────────── -->
-  <button class="dl-btn" id="dlBtn" onclick="download()">
-    ⬇️ Descargar Story para Instagram
-  </button>
-
+  <button class="dl-btn" id="dlBtn" onclick="download()">⬇️ Descargar Story para Instagram</button>
 </div>
 
 <div class="toast" id="toast"></div>
 <canvas id="mainCanvas"></canvas>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  CONSTANTS
-// ═══════════════════════════════════════════════════════
+// ── Constants ──────────────────────────────────────────
 const CW = 1080, CH = 1920;
 const NAVY  = '#1B2A4A';
 const GOLD  = '#D4AF37';
 const WHITE = '#FFFFFF';
-const CREAM = '#F5EDE0';
+const CREAM_PANEL = '#F2E8D9';
 const GAP   = 6;
-const FONT_SERIF = '"Playfair Display", Georgia, serif';
-const FONT_SANS  = '"Poppins", "Helvetica Neue", Arial, sans-serif';
+const FS = '"Playfair Display", Georgia, serif';
+const FB = '"Poppins", Arial, sans-serif';
 
-// ═══════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════
+// ── State ──────────────────────────────────────────────
 let tpl       = 1;
-let photoImgs = [];   // array of Image objects
-let multiMode = 'slides'; // 'slides' | 'collage'
+let photoImgs = [];
+let logoImg   = null;
+let multiMode = 'slides';
 
-// ═══════════════════════════════════════════════════════
-//  FONT LOADING
-// ═══════════════════════════════════════════════════════
+// ── Font loading ───────────────────────────────────────
 document.fonts.ready.then(drawPreview);
 
-// ═══════════════════════════════════════════════════════
-//  TEMPLATE / MODE SELECTION
-// ═══════════════════════════════════════════════════════
+// ── Template selection ─────────────────────────────────
 function setTpl(n) {
   tpl = n;
-  document.querySelectorAll('.tpl-btn').forEach((b, i) => b.classList.toggle('active', i + 1 === n));
+  document.querySelectorAll('.tpl-btn').forEach((b, i) => b.classList.toggle('active', i+1===n));
   drawPreview();
 }
 
 function setMode(m) {
   multiMode = m;
-  document.getElementById('btnSlides').classList.toggle('active',  m === 'slides');
-  document.getElementById('btnCollage').classList.toggle('active', m === 'collage');
-  document.getElementById('tplRow').style.display = m === 'collage' ? 'none' : 'flex';
-  updateModeHint();
-  updateDlBtn();
-  drawPreview();
+  document.getElementById('btnSlides').classList.toggle('active',  m==='slides');
+  document.getElementById('btnCollage').classList.toggle('active', m==='collage');
+  document.getElementById('tplRow').style.display = m==='collage' ? 'none' : 'flex';
+  updateModeHint(); updateDlBtn(); drawPreview();
 }
 
 function updateModeHint() {
-  const el = document.getElementById('modeHint');
   const n = photoImgs.length;
-  if (multiMode === 'slides') {
-    el.textContent = `Se generarán ${n} imágenes, una por foto`;
-  } else {
-    el.textContent = n > 4 ? 'Se usarán las primeras 4 fotos en el collage' : `${n} fotos en una sola imagen`;
-  }
+  document.getElementById('modeHint').textContent = multiMode==='slides'
+    ? `Se generarán ${n} imágenes, una por foto`
+    : (n>4 ? 'Se usarán las primeras 4 fotos en el collage' : `${n} fotos en una sola imagen`);
 }
 
 function updateDlBtn() {
-  const btn = document.getElementById('dlBtn');
-  const n = photoImgs.length;
-  if (n > 1 && multiMode === 'slides') {
-    btn.textContent = `⬇️ Descargar ${n} Stories`;
-  } else {
-    btn.textContent = '⬇️ Descargar Story para Instagram';
-  }
+  document.getElementById('dlBtn').textContent =
+    (photoImgs.length>1 && multiMode==='slides')
+      ? `⬇️ Descargar ${photoImgs.length} Stories`
+      : '⬇️ Descargar Story para Instagram';
 }
 
-// ═══════════════════════════════════════════════════════
-//  PHOTO HANDLING
-// ═══════════════════════════════════════════════════════
-function onPhoto(e) {
-  const files = Array.from(e.target.files);
-  if (!files.length) return;
+// ── Logo handling ──────────────────────────────────────
+function onLogo(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      logoImg = img;
+      const th = document.getElementById('logoThumb');
+      th.src = ev.target.result; th.style.display = 'block';
+      drawPreview();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
 
+// ── Photo handling ─────────────────────────────────────
+function onPhoto(e) {
+  const files = Array.from(e.target.files); if (!files.length) return;
   let loaded = 0;
   const newImgs = Array(files.length);
-
   files.forEach((file, idx) => {
     const reader = new FileReader();
     reader.onload = ev => {
       const img = new Image();
       img.onload = () => {
         newImgs[idx] = { img, src: ev.target.result };
-        loaded++;
-        if (loaded === files.length) {
+        if (++loaded === files.length) {
           photoImgs = [...photoImgs, ...newImgs.map(x => x.img)];
           renderThumbs(newImgs.map(x => x.src));
-          showPhotoControls();
-          drawPreview();
+          showPhotoControls(); drawPreview();
         }
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   });
-
-  // Reset input so same files can be re-selected
   e.target.value = '';
 }
 
 function renderThumbs(newSrcs) {
   const strip = document.getElementById('thumbStrip');
-  newSrcs.forEach((src, addedIdx) => {
-    const globalIdx = photoImgs.length - newSrcs.length + addedIdx;
-    const wrap = document.createElement('div');
-    wrap.className = 'thumb-item';
-    wrap.dataset.idx = globalIdx;
-
-    const img = document.createElement('img');
-    img.src = src;
-    if (globalIdx === 0) img.classList.add('active-thumb');
-    img.onclick = () => {
-      document.querySelectorAll('.thumb-item img').forEach(i => i.classList.remove('active-thumb'));
-      img.classList.add('active-thumb');
-      drawPreview();
-    };
-
-    const btn = document.createElement('button');
-    btn.className = 'thumb-remove';
-    btn.textContent = '×';
-    btn.onclick = (ev) => { ev.stopPropagation(); removePhoto(globalIdx); };
-
-    wrap.appendChild(img);
-    wrap.appendChild(btn);
-    strip.appendChild(wrap);
+  newSrcs.forEach((src, ai) => {
+    const gi = photoImgs.length - newSrcs.length + ai;
+    const wrap = document.createElement('div'); wrap.className='thumb-item'; wrap.dataset.idx=gi;
+    const img = document.createElement('img'); img.src=src;
+    if (gi===0) img.classList.add('active-thumb');
+    img.onclick = () => { document.querySelectorAll('.thumb-item img').forEach(x=>x.classList.remove('active-thumb')); img.classList.add('active-thumb'); drawPreview(); };
+    const btn = document.createElement('button'); btn.className='thumb-remove'; btn.textContent='×';
+    btn.onclick = ev => { ev.stopPropagation(); removePhoto(gi); };
+    wrap.appendChild(img); wrap.appendChild(btn); strip.appendChild(wrap);
   });
 }
 
 function removePhoto(idx) {
   photoImgs.splice(idx, 1);
-  const strip = document.getElementById('thumbStrip');
-  strip.innerHTML = '';
-  // Re-render all thumbs from current photoImgs
+  const strip = document.getElementById('thumbStrip'); strip.innerHTML='';
   photoImgs.forEach((imgObj, i) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64; canvas.height = 64;
-    const ctx2 = canvas.getContext('2d');
-    const scale = Math.max(64 / imgObj.width, 64 / imgObj.height);
-    const sw = imgObj.width * scale, sh = imgObj.height * scale;
-    ctx2.drawImage(imgObj, (64 - sw)/2, (64 - sh)/2, sw, sh);
-
-    const wrap = document.createElement('div');
-    wrap.className = 'thumb-item';
-    wrap.dataset.idx = i;
-    const imgEl = document.createElement('img');
-    imgEl.src = canvas.toDataURL();
-    if (i === 0) imgEl.classList.add('active-thumb');
-    imgEl.onclick = () => {
-      document.querySelectorAll('.thumb-item img').forEach(x => x.classList.remove('active-thumb'));
-      imgEl.classList.add('active-thumb');
-      drawPreview();
-    };
-    const btn = document.createElement('button');
-    btn.className = 'thumb-remove';
-    btn.textContent = '×';
-    btn.onclick = (ev) => { ev.stopPropagation(); removePhoto(i); };
-    wrap.appendChild(imgEl); wrap.appendChild(btn);
-    strip.appendChild(wrap);
+    const c=document.createElement('canvas'); c.width=64; c.height=64;
+    const cx=c.getContext('2d');
+    const sc=Math.max(64/imgObj.width,64/imgObj.height);
+    cx.drawImage(imgObj,(64-imgObj.width*sc)/2,(64-imgObj.height*sc)/2,imgObj.width*sc,imgObj.height*sc);
+    const wrap=document.createElement('div'); wrap.className='thumb-item'; wrap.dataset.idx=i;
+    const ie=document.createElement('img'); ie.src=c.toDataURL();
+    if(i===0) ie.classList.add('active-thumb');
+    ie.onclick=()=>{document.querySelectorAll('.thumb-item img').forEach(x=>x.classList.remove('active-thumb'));ie.classList.add('active-thumb');drawPreview();};
+    const btn=document.createElement('button'); btn.className='thumb-remove'; btn.textContent='×';
+    btn.onclick=ev=>{ev.stopPropagation();removePhoto(i);};
+    wrap.appendChild(ie); wrap.appendChild(btn); strip.appendChild(wrap);
   });
-  showPhotoControls();
-  drawPreview();
+  showPhotoControls(); drawPreview();
 }
 
 function showPhotoControls() {
-  const n = photoImgs.length;
-  document.getElementById('thumbStrip').style.display   = n ? 'flex' : 'none';
-  document.getElementById('posRow').style.display        = n ? 'flex' : 'none';
-  document.getElementById('multiModeRow').style.display  = n > 1 ? 'block' : 'none';
-  if (n <= 1 && multiMode === 'collage') setMode('slides');
-  if (n > 1) updateModeHint();
+  const n=photoImgs.length;
+  document.getElementById('thumbStrip').style.display   = n ? 'flex':'none';
+  document.getElementById('posRow').style.display        = n ? 'flex':'none';
+  document.getElementById('multiModeRow').style.display  = n>1 ? 'block':'none';
+  if (n<=1 && multiMode==='collage') setMode('slides');
+  if (n>1) updateModeHint();
   updateDlBtn();
 }
 
-// Active preview photo index
 function activePhotoIdx() {
-  const active = document.querySelector('.thumb-item img.active-thumb');
-  if (!active) return 0;
-  return parseInt(active.closest('.thumb-item').dataset.idx) || 0;
+  const a=document.querySelector('.thumb-item img.active-thumb');
+  return a ? parseInt(a.closest('.thumb-item').dataset.idx)||0 : 0;
 }
 
-// ═══════════════════════════════════════════════════════
-//  FORM DATA
-// ═══════════════════════════════════════════════════════
+// ── Form data ──────────────────────────────────────────
 function getData() {
   const chk = id => document.getElementById(id).checked;
   const feats = [
-    chk('cEstac') && 'Estacionamiento',
-    chk('cTerr')  && 'Terraza',
-    chk('cPisc')  && 'Piscina',
-    chk('cJard')  && 'Jardín',
-    chk('cGym')   && 'Gimnasio',
-    chk('cSeg')   && 'Seguridad 24h',
-    chk('cVista') && 'Vista al mar',
-    chk('cAmob')  && 'Amoblado',
-    chk('cVParq') && 'Vista a parque',
-    chk('cSParq') && 'Salida a parque',
+    chk('cEstac')&&'Estacionamiento', chk('cTerr')&&'Terraza',
+    chk('cPisc')&&'Piscina',          chk('cJard')&&'Jardín',
+    chk('cGym')&&'Gimnasio',          chk('cSeg')&&'Seguridad 24h',
+    chk('cVista')&&'Vista al mar',    chk('cAmob')&&'Amoblado',
+    chk('cVParq')&&'Vista a parque',  chk('cSParq')&&'Salida a parque',
   ].filter(Boolean);
-
   const tipo = document.getElementById('tipoProp').value;
-  const hideDets = ['Terreno'].includes(tipo);
-
+  const hideDets = tipo==='Terreno';
+  const venta = document.getElementById('opVenta').checked;
+  const alq   = document.getElementById('opAlq').checked;
   return {
-    op:       (document.getElementById('opVenta').checked && document.getElementById('opAlq').checked)
-                ? 'VENTA / ALQUILER'
-                : document.getElementById('opAlq').checked ? 'ALQUILER' : 'VENTA',
-    tipo,
-    distrito: document.getElementById('distrito').value.trim() || 'Lima',
-    moneda:   document.getElementById('moneda').value,
-    precio:   document.getElementById('precio').value.trim(),
-    dorm:     hideDets ? '' : document.getElementById('dorm').value,
-    banos:    hideDets ? '' : document.getElementById('banos').value,
-    area:     document.getElementById('area').value,
-    estac:    document.getElementById('estac').value,
-    wp:       document.getElementById('wp').value.trim(),
-    desc:     document.getElementById('desc').value.trim(),
-    feats,
-    photoPos: parseInt(document.getElementById('photoPos').value) / 100,
+    op: (venta&&alq) ? 'VENTA / ALQUILER' : alq ? 'ALQUILER' : 'VENTA',
+    tipo, distrito: document.getElementById('distrito').value.trim()||'Lima',
+    moneda: document.getElementById('moneda').value,
+    precio: document.getElementById('precio').value.trim(),
+    dorm:   hideDets?'':document.getElementById('dorm').value,
+    banos:  hideDets?'':document.getElementById('banos').value,
+    area:   document.getElementById('area').value,
+    estac:  document.getElementById('estac').value,
+    wp:     document.getElementById('wp').value.trim(),
+    desc:   document.getElementById('desc').value.trim(),
+    feats,  photoPos: parseInt(document.getElementById('photoPos').value)/100,
   };
 }
 
-// ═══════════════════════════════════════════════════════
-//  CANVAS UTILS
-// ═══════════════════════════════════════════════════════
-function rrect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y,   x + w, y + r,   r);
-  ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-  ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
-  ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r);
-  ctx.closePath();
+// ── Canvas utils ───────────────────────────────────────
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+
+function wrapText(ctx,text,x,y,maxW,lh,maxL=99){
+  if(!text)return 0;
+  const words=text.split(' '); const lines=[]; let line='';
+  for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;if(lines.length>=maxL)break;}else line=t;}
+  if(line&&lines.length<maxL)lines.push(line);
+  if(lines.length===maxL){let l=lines[maxL-1];while(ctx.measureText(l+'…').width>maxW&&l.length>1)l=l.slice(0,-1);lines[maxL-1]=l+'…';}
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));
+  return lines.length*lh;
 }
 
-function wrapText(ctx, text, x, y, maxWidth, lineH, maxLines = 99) {
-  if (!text) return 0;
-  const words = text.split(' ');
-  const lines = [];
-  let line = '';
-  for (const word of words) {
-    const test = line ? line + ' ' + word : word;
-    if (ctx.measureText(test).width > maxWidth && line) {
-      lines.push(line);
-      line = word;
-      if (lines.length >= maxLines) break;
-    } else { line = test; }
+function drawImgCover(ctx,img,x,y,w,h,pos=0.5){
+  const sc=Math.max(w/img.width,h/img.height);
+  const sw=img.width*sc,sh=img.height*sc;
+  const ox=x+(w-sw)/2, oy=y-Math.max(0,sh-h)*pos;
+  ctx.drawImage(img,ox,oy,sw,sh);
+}
+
+function placeholderBg(ctx,x,y,w,h){
+  const g=ctx.createLinearGradient(x,y,x+w,y+h);
+  g.addColorStop(0,'#1B2A4A');g.addColorStop(1,'#2D4470');
+  ctx.fillStyle=g;ctx.fillRect(x,y,w,h);
+  ctx.fillStyle='rgba(255,255,255,.06)';ctx.font=`700 130px ${FS}`;ctx.textAlign='center';
+  ctx.fillText('FOTO',x+w/2,y+h/2+45);
+}
+
+// Operation word in verb form (matching reference image style)
+function opWord(op){
+  if(op==='VENTA / ALQUILER') return 'VENDO /\nALQUILO';
+  return op==='VENTA'?'VENDO':'ALQUILO';
+}
+function opWordInline(op){
+  if(op==='VENTA / ALQUILER') return 'VENDO / ALQUILO';
+  return op==='VENTA'?'VENDO':'ALQUILO';
+}
+
+// Draw agency logo — uses uploaded image or elegant text fallback
+function drawLogo(ctx,x,y,maxW,maxH,align='left',dark=false){
+  const col    = dark ? '#1A1A1A' : WHITE;
+  const subtle = dark ? '#666'    : 'rgba(255,255,255,.7)';
+  if(logoImg){
+    const sc=Math.min(maxW/logoImg.width,maxH/logoImg.height);
+    const lw=logoImg.width*sc, lh=logoImg.height*sc;
+    const lx=align==='right'?x-lw:align==='center'?x-lw/2:x;
+    ctx.drawImage(logoImg,lx,y,lw,lh);
+    return lh;
   }
-  if (line && lines.length < maxLines) lines.push(line);
-  if (lines.length === maxLines) {
-    let last = lines[maxLines - 1];
-    while (ctx.measureText(last + '…').width > maxWidth && last.length > 1) last = last.slice(0, -1);
-    lines[maxLines - 1] = last + '…';
-  }
-  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineH));
-  return lines.length * lineH;
+  // Text fallback — mimics the VA monogram style
+  const monSz = Math.min(maxH*0.58, 130);
+  ctx.fillStyle=col; ctx.font=`700 ${monSz}px ${FS}`; ctx.textAlign=align;
+  ctx.fillText('VA',x,y+monSz);
+  const sub=Math.min(maxH*0.18,28);
+  ctx.fillStyle=subtle; ctx.font=`300 ${sub}px ${FB}`;
+  ctx.fillText('Vero Depas & Más',x,y+monSz+sub+10);
+  ctx.fillStyle=col; ctx.font=`500 ${sub*0.85}px ${FB}`;
+  ctx.fillText('@verodepasymas',x,y+monSz+sub*2.2+14);
+  return monSz+sub*2.5+20;
 }
 
-// Draw an image to fill a rect (cover), with vertical position control
-function drawImgCover(ctx, img, x, y, w, h, pos = 0.5) {
-  const scale = Math.max(w / img.width, h / img.height);
-  const sw = img.width * scale;
-  const sh = img.height * scale;
-  const ox = x + (w - sw) / 2;
-  const maxOY = Math.max(0, sh - h);
-  const oy = y - maxOY * pos;
-  ctx.drawImage(img, ox, oy, sw, sh);
+// Vertical stats list (Image 1 style — "3 DORMS", "2 BAÑOS", etc.)
+function statsListV(ctx,d,x,y,col=WHITE,sz=40){
+  const items=[];
+  if(d.dorm  &&+d.dorm >0) items.push(`${d.dorm} DORM${+d.dorm>1?'S':''}`);
+  if(d.banos &&+d.banos>0) items.push(`${d.banos} BAÑO${+d.banos>1?'S':''}`);
+  if(d.area  &&+d.area >0) items.push(`${d.area} M2`);
+  if(d.estac &&+d.estac>0) items.push(`${d.estac} COCHERA${+d.estac>1?'S':''}`);
+  d.feats.slice(0,4).forEach(f=>items.push(f.toUpperCase()));
+  ctx.fillStyle=col; ctx.font=`600 ${sz}px ${FB}`; ctx.textAlign='left';
+  const lh=sz*1.55;
+  items.forEach((it,i)=>ctx.fillText(it,x,y+i*lh+sz));
+  return items.length*lh;
 }
 
-function placeholderBg(ctx, x, y, w, h) {
-  const g = ctx.createLinearGradient(x, y, x + w, y + h);
-  g.addColorStop(0, '#1B2A4A'); g.addColorStop(1, '#2D4470');
-  ctx.fillStyle = g;
-  ctx.fillRect(x, y, w, h);
-  ctx.fillStyle = 'rgba(255,255,255,.06)';
-  ctx.font = `700 130px ${FONT_SERIF}`;
-  ctx.textAlign = 'center';
-  ctx.fillText('FOTO', x + w / 2, y + h / 2 + 45);
+// Bordered stats box (Image 2 style)
+function statsBox(ctx,d,x,y,w,dark=false){
+  const items=[];
+  if(d.dorm  &&+d.dorm >0) items.push({ico:'🛏',t:`${d.dorm} DORM${+d.dorm>1?'S':''}`});
+  if(d.banos &&+d.banos>0) items.push({ico:'🚿',t:`${d.banos} BAÑO${+d.banos>1?'S':''}`});
+  if(d.area  &&+d.area >0) items.push({ico:'📐',t:`${d.area} MTS`});
+  if(d.estac &&+d.estac>0) items.push({ico:'🚗',t:`${d.estac} COCHERA${+d.estac>1?'S':''}`});
+  d.feats.slice(0,4).forEach(f=>items.push({ico:'·',t:f.toUpperCase()}));
+  if(!items.length)return 0;
+  const col   =dark?WHITE:'#1A1A1A';
+  const border=dark?'rgba(255,255,255,.5)':'#1A1A1A';
+  const lh=58, ph=30, pv=26;
+  const bh=items.length*lh+pv*2;
+  ctx.strokeStyle=border; ctx.lineWidth=2.5; rrect(ctx,x,y,w,bh,18); ctx.stroke();
+  ctx.fillStyle=col; ctx.font=`500 30px ${FB}`; ctx.textAlign='left';
+  items.forEach((it,i)=>ctx.fillText(`${it.ico}  ${it.t}`,x+ph,y+pv+i*lh+34));
+  return bh;
 }
 
-function opBadge(ctx, op, x, y) {
-  const both   = op === 'VENTA / ALQUILER';
-  const label  = both ? 'VENTA / ALQUILER' : op === 'VENTA' ? 'EN VENTA' : 'EN ALQUILER';
-  const bgCol  = both ? NAVY : op === 'VENTA' ? GOLD : '#2A7A50';
-  const txtCol = both ? GOLD : op === 'VENTA' ? NAVY : WHITE;
-  ctx.font = `700 34px ${FONT_SANS}`;
-  const bw = ctx.measureText(label).width + 72;
-  ctx.fillStyle = bgCol;
-  rrect(ctx, x, y, bw, 76, 38);
-  ctx.fill();
-  if (both) { ctx.strokeStyle = GOLD; ctx.lineWidth = 3; rrect(ctx, x, y, bw, 76, 38); ctx.stroke(); }
-  ctx.fillStyle = txtCol;
-  ctx.textAlign = 'left';
-  ctx.fillText(label, x + 36, y + 52);
-  return bw;
+// Agency footer bar (navy/gold — our brand)
+function agencyBar(ctx,d,y,h){
+  ctx.fillStyle='rgba(27,42,74,.93)'; ctx.fillRect(0,y,CW,h);
+  ctx.fillStyle=GOLD; ctx.fillRect(0,y,CW,5);
+  ctx.textAlign='center';
+  ctx.fillStyle=WHITE; ctx.font=`700 40px ${FB}`; ctx.fillText('ORIETTA SOTOMAYOR',CW/2,y+62);
+  ctx.fillStyle=GOLD;  ctx.font=`500 26px ${FB}`; ctx.fillText('REALTOR  ·  LIMA, PERÚ',CW/2,y+102);
+  ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font=`400 28px ${FB}`;
+  ctx.fillText(d.wp?`${d.wp}   ·   @verodepasymas`:'📷  @verodepasymas',CW/2,y+148);
 }
 
-function agencyBar(ctx, d, y, h) {
-  ctx.fillStyle = 'rgba(27,42,74,.93)';
-  ctx.fillRect(0, y, CW, h);
-  ctx.fillStyle = GOLD;
-  ctx.fillRect(0, y, CW, 5);
-  ctx.textAlign = 'center';
-  ctx.fillStyle = WHITE;
-  ctx.font = `700 40px ${FONT_SANS}`;
-  ctx.fillText('ORIETTA SOTOMAYOR', CW / 2, y + 62);
-  ctx.fillStyle = GOLD;
-  ctx.font = `500 26px ${FONT_SANS}`;
-  ctx.fillText('REALTOR  ·  LIMA, PERÚ', CW / 2, y + 102);
-  ctx.fillStyle = 'rgba(255,255,255,.7)';
-  ctx.font = `400 28px ${FONT_SANS}`;
-  const contact = d.wp ? `${d.wp}   ·   @verodepasymas` : '📷  @verodepasymas';
-  ctx.fillText(contact, CW / 2, y + 148);
-}
+// ──────────────────────────────────────────────────────
+//  TEMPLATE 1 — CLÁSICO
+//  Full photo · dark bottom overlay · VENDO large ·
+//  stats list right · logo bottom-right
+//  (inspired by Image 1 reference)
+// ──────────────────────────────────────────────────────
+function renderClasico(ctx,d,photo){
+  if(photo) drawImgCover(ctx,photo,0,0,CW,CH,d.photoPos);
+  else placeholderBg(ctx,0,0,CW,CH);
 
-// Stats — up to 4 items. Returns height used.
-function statsRow(ctx, d, cx, y, color = WHITE, muted = 'rgba(255,255,255,.6)') {
-  const items = [];
-  if (d.dorm  && +d.dorm  > 0) items.push({ val: d.dorm,          lbl: 'Dormitorios', ico: '🛏' });
-  if (d.banos && +d.banos > 0) items.push({ val: d.banos,         lbl: 'Baños',       ico: '🚿' });
-  if (d.area  && +d.area  > 0) items.push({ val: d.area + ' m²',  lbl: 'Área',        ico: '📐' });
-  if (d.estac && +d.estac > 0) items.push({ val: d.estac,         lbl: 'Estacionam.', ico: '🚗' });
-  if (!items.length) return 0;
+  // Dark gradient covering bottom ~40%
+  const darkY = Math.round(CH*0.60); // y=1152
+  const g=ctx.createLinearGradient(0,darkY-150,0,CH);
+  g.addColorStop(0,'rgba(0,0,0,0)');
+  g.addColorStop(0.22,'rgba(0,0,0,0.65)');
+  g.addColorStop(1,'rgba(0,0,0,0.90)');
+  ctx.fillStyle=g; ctx.fillRect(0,darkY-150,CW,CH-darkY+150);
 
-  if (items.length <= 3) {
-    const step = items.length === 1 ? 0 : (items.length === 2 ? 380 : 310);
-    const startX = cx - (items.length - 1) * step / 2;
-    items.forEach((it, i) => {
-      const x = startX + i * step;
-      ctx.fillStyle = color; ctx.font = `700 66px ${FONT_SANS}`; ctx.textAlign = 'center';
-      ctx.fillText(it.val, x, y + 66);
-      ctx.fillStyle = muted; ctx.font = `400 28px ${FONT_SANS}`;
-      ctx.fillText(`${it.ico} ${it.lbl}`, x, y + 108);
-    });
-    if (items.length > 1) {
-      ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = 2;
-      for (let i = 1; i < items.length; i++) {
-        const dx = startX + i * step - step / 2;
-        ctx.beginPath(); ctx.moveTo(dx, y - 10); ctx.lineTo(dx, y + 120); ctx.stroke();
-      }
-    }
-    return 130;
-  } else {
-    // 2×2 grid
-    const colW = CW / 2;
-    const rowH = 128;
-    items.forEach((it, i) => {
-      const col = i % 2, row = Math.floor(i / 2);
-      const x = colW * col + colW / 2;
-      const iy = y + row * rowH;
-      ctx.fillStyle = color; ctx.font = `700 58px ${FONT_SANS}`; ctx.textAlign = 'center';
-      ctx.fillText(it.val, x, iy + 56);
-      ctx.fillStyle = muted; ctx.font = `400 24px ${FONT_SANS}`;
-      ctx.fillText(`${it.ico} ${it.lbl}`, x, iy + 90);
-    });
-    // Grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(colW, y - 10); ctx.lineTo(colW, y + rowH * 2); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, y + rowH); ctx.lineTo(CW, y + rowH); ctx.stroke();
-    return rowH * 2 + 10;
-  }
-}
+  // Thin separator line
+  ctx.strokeStyle='rgba(255,255,255,.28)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(70,darkY); ctx.lineTo(CW-70,darkY); ctx.stroke();
 
-function featsLine(ctx, feats, x, y, maxWidth, align, color = 'rgba(255,255,255,.82)') {
-  if (!feats.length) return;
-  ctx.fillStyle = color; ctx.font = `400 28px ${FONT_SANS}`; ctx.textAlign = align;
-  wrapText(ctx, feats.slice(0, 4).join('  ·  '), x, y, maxWidth, 40, 2);
-}
+  // LEFT COLUMN: operation word + description + district
+  const word = opWordInline(d.op);
+  const wordFS = word.length>14 ? 88 : word.length>7 ? 110 : 138;
+  ctx.fillStyle=WHITE; ctx.font=`700 ${wordFS}px ${FS}`; ctx.textAlign='left';
+  ctx.fillText(word,70,darkY+wordFS+20);
 
-// ═══════════════════════════════════════════════════════
-//  TEMPLATE 1 — ELEGANTE
-// ═══════════════════════════════════════════════════════
-function renderElegante(ctx, d, photo) {
-  if (photo) drawImgCover(ctx, photo, 0, 0, CW, CH, d.photoPos);
-  else placeholderBg(ctx, 0, 0, CW, CH);
-
-  const vig = ctx.createLinearGradient(0, 0, 0, CH);
-  vig.addColorStop(0,    'rgba(0,0,0,.60)');
-  vig.addColorStop(0.38, 'rgba(0,0,0,.18)');
-  vig.addColorStop(0.58, 'rgba(0,0,0,.24)');
-  vig.addColorStop(1,    'rgba(0,0,0,.88)');
-  ctx.fillStyle = vig; ctx.fillRect(0, 0, CW, CH);
-
-  opBadge(ctx, d.op, 70, 100);
-  ctx.fillStyle = 'rgba(255,255,255,.80)'; ctx.font = `300 36px ${FONT_SANS}`; ctx.textAlign = 'left';
-  ctx.fillText(d.tipo.toUpperCase(), 70, 250);
-  ctx.fillStyle = WHITE; ctx.font = `700 80px ${FONT_SERIF}`; ctx.textAlign = 'left';
-  wrapText(ctx, d.distrito, 70, 310, CW - 140, 92, 2);
-
-  const sY = 850;
-  ctx.fillStyle = 'rgba(0,0,0,.30)'; ctx.fillRect(0, sY - 30, CW, 200);
-  const sh = statsRow(ctx, d, CW / 2, sY);
-
-  if (d.precio) {
-    const pY = 1120 + Math.max(0, sh - 130);
-    ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(0, pY - 30, CW, 220);
-    ctx.fillStyle = GOLD; ctx.font = `600 34px ${FONT_SANS}`; ctx.textAlign = 'center';
-    ctx.fillText('PRECIO', CW / 2, pY + 40);
-    const ps = `${d.moneda} ${d.precio}`;
-    ctx.fillStyle = WHITE;
-    let fs = 104; ctx.font = `700 ${fs}px ${FONT_SERIF}`;
-    while (ctx.measureText(ps).width > CW - 120 && fs > 58) { fs -= 4; ctx.font = `700 ${fs}px ${FONT_SERIF}`; }
-    ctx.fillText(ps, CW / 2, pY + 160);
+  if(d.desc){
+    ctx.fillStyle='rgba(255,255,255,.78)'; ctx.font=`400 36px ${FB}`; ctx.textAlign='left';
+    wrapText(ctx,d.desc,70,darkY+wordFS+70,460,52,2);
   }
 
-  featsLine(ctx, d.feats, CW / 2, 1430, CW - 120, 'center');
-  if (d.desc) {
-    ctx.fillStyle = 'rgba(255,255,255,.68)'; ctx.font = `300 italic 32px ${FONT_SANS}`; ctx.textAlign = 'center';
-    wrapText(ctx, `"${d.desc}"`, CW / 2, d.feats.length ? 1520 : 1450, CW - 150, 46, 2);
-  }
-  agencyBar(ctx, d, CH - 215, 215);
+  // District + tipo near bottom-left
+  ctx.fillStyle='rgba(255,255,255,.60)'; ctx.font=`600 36px ${FB}`;
+  ctx.fillText(d.distrito.toUpperCase(),70,CH-220);
+  ctx.fillStyle='rgba(255,255,255,.40)'; ctx.font=`400 28px ${FB}`;
+  ctx.fillText(d.tipo,70,CH-176);
+
+  // Vertical divider
+  ctx.strokeStyle='rgba(255,255,255,.20)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(555,darkY+20); ctx.lineTo(555,CH-155); ctx.stroke();
+
+  // RIGHT COLUMN: stats
+  statsListV(ctx,d,585,darkY+20,WHITE,40);
+
+  // Logo bottom-right
+  drawLogo(ctx,CW-70,CH-240,360,170,'right',false);
+
+  // Contact
+  ctx.fillStyle='rgba(255,255,255,.40)'; ctx.font=`300 26px ${FB}`; ctx.textAlign='center';
+  ctx.fillText(d.wp?`${d.wp}   ·   @verodepasymas`:'@verodepasymas',CW/2,CH-38);
 }
 
-// ═══════════════════════════════════════════════════════
-//  TEMPLATE 2 — MODERNO
-// ═══════════════════════════════════════════════════════
-function renderModerno(ctx, d, photo) {
-  const splitY = Math.round(CH * 0.60);
-  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, CW, splitY); ctx.clip();
-  if (photo) drawImgCover(ctx, photo, 0, 0, CW, splitY, d.photoPos);
-  else placeholderBg(ctx, 0, 0, CW, splitY);
+// ──────────────────────────────────────────────────────
+//  TEMPLATE 2 — EDITORIAL
+//  Photo top · cream panel · logo left · stats box right
+//  (inspired by Image 2 reference)
+// ──────────────────────────────────────────────────────
+function renderEditorial(ctx,d,photo){
+  const splitY = Math.round(CH*0.53); // ~1018px
+
+  // Photo section
+  ctx.save(); ctx.beginPath(); ctx.rect(0,0,CW,splitY); ctx.clip();
+  if(photo) drawImgCover(ctx,photo,0,0,CW,splitY,d.photoPos);
+  else placeholderBg(ctx,0,0,CW,splitY);
   ctx.restore();
 
-  const fade = ctx.createLinearGradient(0, splitY - 180, 0, splitY + 60);
-  fade.addColorStop(0, 'rgba(245,237,224,0)'); fade.addColorStop(1, 'rgba(245,237,224,1)');
-  ctx.fillStyle = fade; ctx.fillRect(0, splitY - 180, CW, 240);
-  ctx.fillStyle = CREAM; ctx.fillRect(0, splitY, CW, CH - splitY);
+  // Operation word overlay on photo (top-left, bold + shadow)
+  const word = opWordInline(d.op);
+  const wordFS = word.length>14?88:word.length>7?110:140;
+  ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=24;
+  ctx.fillStyle=WHITE; ctx.font=`700 ${wordFS}px ${FS}`; ctx.textAlign='left';
+  ctx.fillText(word,70,wordFS+50);
+  ctx.fillStyle='rgba(255,255,255,.88)'; ctx.font=`700 58px ${FB}`;
+  ctx.fillText(d.distrito.toUpperCase(),70,wordFS+120);
+  ctx.shadowBlur=0;
 
-  opBadge(ctx, d.op, 70, 80);
+  // Fade photo→panel
+  const fade=ctx.createLinearGradient(0,splitY-100,0,splitY+40);
+  fade.addColorStop(0,`rgba(242,232,217,0)`); fade.addColorStop(1,`rgba(242,232,217,1)`);
+  ctx.fillStyle=fade; ctx.fillRect(0,splitY-100,CW,140);
 
-  let curY = splitY + 56;
-  ctx.fillStyle = GOLD; ctx.font = `600 30px ${FONT_SANS}`; ctx.textAlign = 'left';
-  ctx.fillText(d.tipo.toUpperCase(), 70, curY); curY += 56;
-  ctx.fillStyle = NAVY; ctx.font = `700 76px ${FONT_SERIF}`; ctx.textAlign = 'left';
-  curY += wrapText(ctx, d.distrito, 70, curY, CW - 140, 88, 2) + 28;
-  ctx.fillStyle = GOLD; ctx.fillRect(70, curY, 90, 5); curY += 44;
+  // Cream panel
+  ctx.fillStyle=CREAM_PANEL; ctx.fillRect(0,splitY,CW,CH-splitY);
 
-  const si = [];
-  if (d.dorm  && +d.dorm  > 0) si.push(`🛏 ${d.dorm}`);
-  if (d.banos && +d.banos > 0) si.push(`🚿 ${d.banos}`);
-  if (d.area  && +d.area  > 0) si.push(`📐 ${d.area} m²`);
-  if (d.estac && +d.estac > 0) si.push(`🚗 ${d.estac}`);
-  ctx.fillStyle = '#444'; ctx.font = `500 32px ${FONT_SANS}`; ctx.textAlign = 'left';
-  ctx.fillText(si.join('   '), 70, curY); curY += 66;
+  const pad=60, colW=(CW-pad*3)/2; // ~420px per column
+  const c1=pad, c2=pad*2+colW;     // x=60, x=540
+  let ly=splitY+46, ry=splitY+46;
 
-  if (d.precio) {
-    const ps = `${d.moneda} ${d.precio}`;
-    ctx.fillStyle = NAVY; let fs = 96; ctx.font = `700 ${fs}px ${FONT_SERIF}`;
-    while (ctx.measureText(ps).width > CW - 140 && fs > 56) { fs -= 4; ctx.font = `700 ${fs}px ${FONT_SERIF}`; }
-    ctx.textAlign = 'left'; ctx.fillText(ps, 70, curY + 80); curY += 100;
+  // Logo — left column
+  const lh=drawLogo(ctx,c1,ly,colW,210,'left',true);
+  ly+=lh+28;
+
+  // Stats box — right column
+  const sbh=statsBox(ctx,d,c2,ry,colW,false);
+  ry+=sbh+24;
+
+  // Price — left
+  if(d.precio){
+    const ps=`${d.moneda} ${d.precio}`;
+    ctx.fillStyle='#1A1A1A'; let fs=80; ctx.font=`700 ${fs}px ${FS}`;
+    while(ctx.measureText(ps).width>colW&&fs>48){fs-=4;ctx.font=`700 ${fs}px ${FS}`;}
+    ctx.textAlign='left'; ctx.fillText(ps,c1,ly+fs); ly+=fs+22;
   }
 
-  featsLine(ctx, d.feats, 70, curY + 50, CW - 140, 'left', '#666');
-  if (d.desc) {
-    ctx.fillStyle = '#888'; ctx.font = `300 italic 28px ${FONT_SANS}`; ctx.textAlign = 'left';
-    wrapText(ctx, `"${d.desc}"`, 70, curY + 110, CW - 140, 42, 2);
+  // Description box — spans width or left col
+  if(d.desc){
+    ctx.font=`500 30px ${FB}`; ctx.textAlign='left';
+    const lines=Math.min(3,Math.ceil(d.desc.length/38));
+    const dbh=lines*44+52;
+    ctx.strokeStyle='#1A1A1A'; ctx.lineWidth=2.5;
+    rrect(ctx,c1,ly,colW,dbh,16); ctx.stroke();
+    ctx.fillStyle='#1A1A1A';
+    wrapText(ctx,d.desc,c1+24,ly+42,colW-48,44,3);
+    ly+=dbh+16;
   }
-  agencyBar(ctx, d, CH - 190, 190);
+
+  // Tipo — small label
+  ctx.fillStyle='#888'; ctx.font=`400 28px ${FB}`; ctx.textAlign='left';
+  ctx.fillText(d.tipo,c1,Math.max(ly+28, ry+28));
+
+  // Agency bar
+  agencyBar(ctx,d,CH-175,175);
 }
 
-// ═══════════════════════════════════════════════════════
+// ──────────────────────────────────────────────────────
 //  TEMPLATE 3 — IMPACTO
-// ═══════════════════════════════════════════════════════
-function renderImpacto(ctx, d, photo) {
-  if (photo) drawImgCover(ctx, photo, 0, 0, CW, CH, d.photoPos);
-  else placeholderBg(ctx, 0, 0, CW, CH);
+//  Full-bleed · strong bottom gradient · big price · logo
+// ──────────────────────────────────────────────────────
+function renderImpacto(ctx,d,photo){
+  if(photo) drawImgCover(ctx,photo,0,0,CW,CH,d.photoPos);
+  else placeholderBg(ctx,0,0,CW,CH);
 
-  const g = ctx.createLinearGradient(0, CH * 0.30, 0, CH);
-  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(0.35, 'rgba(0,0,0,.52)'); g.addColorStop(1, 'rgba(0,0,0,.94)');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, CW, CH);
+  const g=ctx.createLinearGradient(0,CH*0.30,0,CH);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(0.35,'rgba(0,0,0,.52)'); g.addColorStop(1,'rgba(0,0,0,.94)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,CW,CH);
 
-  const accent = d.op === 'VENTA' ? GOLD : '#28A86E';
-  ctx.fillStyle = accent; ctx.fillRect(0, 0, CW, 12);
-  ctx.font = `700 28px ${FONT_SANS}`; ctx.textAlign = 'right'; ctx.fillStyle = accent;
-  ctx.fillText(d.op, CW - 70, 72);
+  // Top bar
+  const accent=d.op==='ALQUILER'?'#28A86E':GOLD;
+  ctx.fillStyle=accent; ctx.fillRect(0,0,CW,12);
 
-  let y = CH - 230;
-  ctx.fillStyle = 'rgba(255,255,255,.82)'; ctx.font = `600 32px ${FONT_SANS}`; ctx.textAlign = 'left';
-  ctx.fillText('ORIETTA SOTOMAYOR · REALTOR', 70, y); y -= 48;
-  ctx.fillStyle = GOLD; ctx.font = `400 26px ${FONT_SANS}`;
-  ctx.fillText(d.wp ? `${d.wp}  ·  @verodepasymas` : '@verodepasymas', 70, y); y -= 60;
+  // Logo top-right
+  drawLogo(ctx,CW-70,50,280,140,'right',false);
 
-  featsLine(ctx, d.feats, 70, y, CW - 140, 'left');
-  if (d.feats.length) y -= 56;
-  if (d.desc) {
-    ctx.fillStyle = 'rgba(255,255,255,.65)'; ctx.font = `300 italic 30px ${FONT_SANS}`; ctx.textAlign = 'left';
-    y -= 50; wrapText(ctx, `"${d.desc}"`, 70, y, CW - 140, 44, 2); y -= 20;
+  let y=CH-230;
+  ctx.fillStyle='rgba(255,255,255,.82)'; ctx.font=`600 32px ${FB}`; ctx.textAlign='left';
+  ctx.fillText('ORIETTA SOTOMAYOR · REALTOR',70,y); y-=48;
+  ctx.fillStyle=GOLD; ctx.font=`400 26px ${FB}`;
+  ctx.fillText(d.wp?`${d.wp}  ·  @verodepasymas`:'@verodepasymas',70,y); y-=60;
+
+  if(d.feats.length){ctx.fillStyle='rgba(255,255,255,.78)';ctx.font=`400 28px ${FB}`;ctx.textAlign='left';ctx.fillText(d.feats.slice(0,4).join('  ·  '),70,y);y-=56;}
+  if(d.desc){ctx.fillStyle='rgba(255,255,255,.65)';ctx.font=`300 italic 30px ${FB}`;ctx.textAlign='left';y-=50;wrapText(ctx,`"${d.desc}"`,70,y,CW-140,44,2);y-=20;}
+
+  if(d.precio){
+    y-=20; const ps=`${d.moneda} ${d.precio}`;
+    ctx.fillStyle=GOLD; let fs=128; ctx.font=`700 ${fs}px ${FS}`;
+    while(ctx.measureText(ps).width>CW-140&&fs>70){fs-=5;ctx.font=`700 ${fs}px ${FS}`;}
+    ctx.textAlign='left'; ctx.fillText(ps,70,y); y-=fs+20;
   }
 
-  if (d.precio) {
-    y -= 20;
-    const ps = `${d.moneda} ${d.precio}`;
-    ctx.fillStyle = GOLD; let fs = 128; ctx.font = `700 ${fs}px ${FONT_SERIF}`;
-    while (ctx.measureText(ps).width > CW - 140 && fs > 70) { fs -= 5; ctx.font = `700 ${fs}px ${FONT_SERIF}`; }
-    ctx.fillText(ps, 70, y); y -= fs + 20;
-  }
+  const si=[];
+  if(d.dorm &&+d.dorm >0)si.push(`🛏 ${d.dorm}`);
+  if(d.banos&&+d.banos>0)si.push(`🚿 ${d.banos}`);
+  if(d.area &&+d.area >0)si.push(`${d.area} m²`);
+  if(d.estac&&+d.estac>0)si.push(`🚗 ${d.estac}`);
+  if(si.length){ctx.fillStyle='rgba(255,255,255,.78)';ctx.font=`400 38px ${FB}`;ctx.textAlign='left';ctx.fillText(si.join('   '),70,y);y-=66;}
 
-  const si = [];
-  if (d.dorm  && +d.dorm  > 0) si.push(`🛏 ${d.dorm}`);
-  if (d.banos && +d.banos > 0) si.push(`🚿 ${d.banos}`);
-  if (d.area  && +d.area  > 0) si.push(`${d.area} m²`);
-  if (d.estac && +d.estac > 0) si.push(`🚗 ${d.estac}`);
-  if (si.length) {
-    ctx.fillStyle = 'rgba(255,255,255,.78)'; ctx.font = `400 38px ${FONT_SANS}`; ctx.textAlign = 'left';
-    ctx.fillText(si.join('   '), 70, y); y -= 66;
-  }
-
-  ctx.fillStyle = GOLD; ctx.fillRect(70, y, 90, 5); y -= 44;
-  ctx.fillStyle = WHITE; ctx.font = `700 88px ${FONT_SERIF}`; ctx.textAlign = 'left';
-  const dh = wrapText(ctx, d.distrito, 70, y - 80, CW - 140, 100, 2);
-  y -= dh + 40;
-  ctx.fillStyle = 'rgba(255,255,255,.62)'; ctx.font = `300 36px ${FONT_SANS}`;
-  ctx.fillText(d.tipo.toUpperCase(), 70, y);
+  ctx.fillStyle=GOLD; ctx.fillRect(70,y,90,5); y-=44;
+  ctx.fillStyle=WHITE; ctx.font=`700 88px ${FS}`; ctx.textAlign='left';
+  y-=wrapText(ctx,d.distrito,70,y-80,CW-140,100,2)+40;
+  ctx.fillStyle='rgba(255,255,255,.62)'; ctx.font=`300 36px ${FB}`;
+  ctx.fillText(d.tipo.toUpperCase(),70,y);
 }
 
-// ═══════════════════════════════════════════════════════
-//  TEMPLATE COLLAGE
-//  Photos in top section, info panel below
-// ═══════════════════════════════════════════════════════
-function renderCollage(ctx, d) {
-  const photos  = photoImgs.slice(0, 4);
-  const n       = photos.length;
-  const photoH  = Math.round(CH * 0.56);
-  const infoY   = photoH;
-  const infoH   = CH - photoH;
+// ──────────────────────────────────────────────────────
+//  COLLAGE
+// ──────────────────────────────────────────────────────
+function renderCollage(ctx,d){
+  const photos=photoImgs.slice(0,4), n=photos.length;
+  const photoH=Math.round(CH*0.56), infoY=photoH;
 
-  // ── Draw photos ──────────────────────────────────────
-  if (n === 0) {
-    placeholderBg(ctx, 0, 0, CW, photoH);
-  } else if (n === 1) {
-    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, CW, photoH); ctx.clip();
-    drawImgCover(ctx, photos[0], 0, 0, CW, photoH, d.photoPos);
-    ctx.restore();
-  } else if (n === 2) {
-    const hw = (CW - GAP) / 2;
-    [[0, photos[0]], [hw + GAP, photos[1]]].forEach(([x, img]) => {
-      ctx.save(); ctx.beginPath(); ctx.rect(x, 0, hw, photoH); ctx.clip();
-      drawImgCover(ctx, img, x, 0, hw, photoH, d.photoPos); ctx.restore();
-    });
-    ctx.fillStyle = CREAM; ctx.fillRect(hw, 0, GAP, photoH);
-  } else if (n === 3) {
-    const hw = (CW - GAP) / 2;
-    const hh = (photoH - GAP) / 2;
-    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, hw, photoH); ctx.clip();
-    drawImgCover(ctx, photos[0], 0, 0, hw, photoH, d.photoPos); ctx.restore();
-    [[0, photos[1]], [hh + GAP, photos[2]]].forEach(([y, img]) => {
-      ctx.save(); ctx.beginPath(); ctx.rect(hw + GAP, y, hw, hh); ctx.clip();
-      drawImgCover(ctx, img, hw + GAP, y, hw, hh, d.photoPos); ctx.restore();
-    });
-    ctx.fillStyle = CREAM;
-    ctx.fillRect(hw, 0, GAP, photoH);
-    ctx.fillRect(hw + GAP, hh, hw, GAP);
+  if(n===0) placeholderBg(ctx,0,0,CW,photoH);
+  else if(n===1){ctx.save();ctx.beginPath();ctx.rect(0,0,CW,photoH);ctx.clip();drawImgCover(ctx,photos[0],0,0,CW,photoH,d.photoPos);ctx.restore();}
+  else if(n===2){
+    const hw=(CW-GAP)/2;
+    [[0,photos[0]],[hw+GAP,photos[1]]].forEach(([x,img])=>{ctx.save();ctx.beginPath();ctx.rect(x,0,hw,photoH);ctx.clip();drawImgCover(ctx,img,x,0,hw,photoH,d.photoPos);ctx.restore();});
+    ctx.fillStyle=CREAM_PANEL; ctx.fillRect(hw,0,GAP,photoH);
+  } else if(n===3){
+    const hw=(CW-GAP)/2,hh=(photoH-GAP)/2;
+    ctx.save();ctx.beginPath();ctx.rect(0,0,hw,photoH);ctx.clip();drawImgCover(ctx,photos[0],0,0,hw,photoH,d.photoPos);ctx.restore();
+    [[0,photos[1]],[hh+GAP,photos[2]]].forEach(([y,img])=>{ctx.save();ctx.beginPath();ctx.rect(hw+GAP,y,hw,hh);ctx.clip();drawImgCover(ctx,img,hw+GAP,y,hw,hh,d.photoPos);ctx.restore();});
+    ctx.fillStyle=CREAM_PANEL; ctx.fillRect(hw,0,GAP,photoH); ctx.fillRect(hw+GAP,hh,hw,GAP);
   } else {
-    // 4 photos: 2×2 grid
-    const hw = (CW - GAP) / 2;
-    const hh = (photoH - GAP) / 2;
-    photos.forEach((img, i) => {
-      const col = i % 2, row = Math.floor(i / 2);
-      const x = col * (hw + GAP), y = row * (hh + GAP);
-      ctx.save(); ctx.beginPath(); ctx.rect(x, y, hw, hh); ctx.clip();
-      drawImgCover(ctx, img, x, y, hw, hh, d.photoPos); ctx.restore();
-    });
-    ctx.fillStyle = CREAM;
-    ctx.fillRect(hw, 0, GAP, photoH);
-    ctx.fillRect(0, hh, CW, GAP);
+    const hw=(CW-GAP)/2,hh=(photoH-GAP)/2;
+    photos.forEach((img,i)=>{const col=i%2,row=Math.floor(i/2),x=col*(hw+GAP),y=row*(hh+GAP);ctx.save();ctx.beginPath();ctx.rect(x,y,hw,hh);ctx.clip();drawImgCover(ctx,img,x,y,hw,hh,d.photoPos);ctx.restore();});
+    ctx.fillStyle=CREAM_PANEL; ctx.fillRect(hw,0,GAP,photoH); ctx.fillRect(0,photoH/2-GAP/2,CW,GAP);
   }
 
-  // Slight dark overlay on photos
-  const pv = ctx.createLinearGradient(0, 0, 0, photoH);
-  pv.addColorStop(0,   'rgba(0,0,0,.28)');
-  pv.addColorStop(0.7, 'rgba(0,0,0,.08)');
-  pv.addColorStop(1,   'rgba(0,0,0,.0)');
-  ctx.fillStyle = pv; ctx.fillRect(0, 0, CW, photoH);
+  // Dark overlay on photo portion
+  const pv=ctx.createLinearGradient(0,0,0,photoH);
+  pv.addColorStop(0,'rgba(0,0,0,.28)'); pv.addColorStop(0.7,'rgba(0,0,0,.08)'); pv.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=pv; ctx.fillRect(0,0,CW,photoH);
 
-  // Photo → panel fade
-  const fade = ctx.createLinearGradient(0, infoY - 120, 0, infoY + 40);
-  fade.addColorStop(0, 'rgba(245,237,224,0)'); fade.addColorStop(1, 'rgba(245,237,224,1)');
-  ctx.fillStyle = fade; ctx.fillRect(0, infoY - 120, CW, 160);
+  // Photo→panel fade
+  const fade=ctx.createLinearGradient(0,photoH-100,0,infoY+40);
+  fade.addColorStop(0,`rgba(242,232,217,0)`); fade.addColorStop(1,`rgba(242,232,217,1)`);
+  ctx.fillStyle=fade; ctx.fillRect(0,photoH-100,CW,140);
 
-  // Op badge (on photo top-left)
-  opBadge(ctx, d.op, 60, 60);
+  ctx.fillStyle=CREAM_PANEL; ctx.fillRect(0,infoY,CW,CH-infoY);
 
-  // ── Info panel ───────────────────────────────────────
-  ctx.fillStyle = CREAM; ctx.fillRect(0, infoY, CW, infoH);
+  // Op badge on photo
+  const opB=d.op==='VENTA/ALQUILER'?'VENTA / ALQUILER':d.op==='VENTA'?'EN VENTA':'EN ALQUILER';
+  const bgC=d.op==='ALQUILER'?'#2A7A50':GOLD; const txC=d.op==='ALQUILER'?WHITE:NAVY;
+  ctx.font=`700 34px ${FB}`; const bw=ctx.measureText(opB).width+72;
+  ctx.fillStyle=bgC; rrect(ctx,60,60,bw,76,38); ctx.fill();
+  ctx.fillStyle=txC; ctx.textAlign='left'; ctx.fillText(opB,96,112);
 
-  let cy = infoY + 52;
-  ctx.fillStyle = GOLD; ctx.font = `600 28px ${FONT_SANS}`; ctx.textAlign = 'left';
-  ctx.fillText(d.tipo.toUpperCase(), 70, cy); cy += 50;
+  const pad=60,colW=(CW-pad*3)/2, c1=pad, c2=pad*2+colW;
+  let ly=infoY+46, ry=infoY+46;
 
-  ctx.fillStyle = NAVY; ctx.font = `700 72px ${FONT_SERIF}`; ctx.textAlign = 'left';
-  cy += wrapText(ctx, d.distrito, 70, cy, CW - 140, 84, 2) + 22;
+  const lh=drawLogo(ctx,c1,ly,colW,200,'left',true); ly+=lh+24;
+  const sbh=statsBox(ctx,d,c2,ry,colW,false); ry+=sbh+20;
 
-  ctx.fillStyle = GOLD; ctx.fillRect(70, cy, 80, 4); cy += 38;
-
-  const si = [];
-  if (d.dorm  && +d.dorm  > 0) si.push(`🛏 ${d.dorm}`);
-  if (d.banos && +d.banos > 0) si.push(`🚿 ${d.banos}`);
-  if (d.area  && +d.area  > 0) si.push(`📐 ${d.area} m²`);
-  if (d.estac && +d.estac > 0) si.push(`🚗 ${d.estac}`);
-  ctx.fillStyle = '#444'; ctx.font = `500 30px ${FONT_SANS}`; ctx.textAlign = 'left';
-  ctx.fillText(si.join('   '), 70, cy); cy += 58;
-
-  if (d.precio) {
-    const ps = `${d.moneda} ${d.precio}`;
-    ctx.fillStyle = NAVY; let fs = 88; ctx.font = `700 ${fs}px ${FONT_SERIF}`;
-    while (ctx.measureText(ps).width > CW - 140 && fs > 52) { fs -= 4; ctx.font = `700 ${fs}px ${FONT_SERIF}`; }
-    ctx.textAlign = 'left'; ctx.fillText(ps, 70, cy + 72); cy += 90;
+  if(d.precio){
+    const ps=`${d.moneda} ${d.precio}`;
+    ctx.fillStyle='#1A1A1A'; let fs=76; ctx.font=`700 ${fs}px ${FS}`;
+    while(ctx.measureText(ps).width>colW&&fs>44){fs-=4;ctx.font=`700 ${fs}px ${FS}`;}
+    ctx.textAlign='left'; ctx.fillText(ps,c1,ly+fs); ly+=fs+20;
   }
 
-  featsLine(ctx, d.feats, 70, cy + 40, CW - 140, 'left', '#666');
-
-  agencyBar(ctx, d, CH - 178, 178);
-}
-
-// ═══════════════════════════════════════════════════════
-//  MAIN RENDER
-// ═══════════════════════════════════════════════════════
-function renderTo(canvas, photo) {
-  canvas.width = CW; canvas.height = CH;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, CW, CH);
-  const d = getData();
-
-  // Collage mode overrides template
-  if (multiMode === 'collage' && photoImgs.length > 1) {
-    renderCollage(ctx, d);
-    return;
+  if(d.desc){
+    ctx.font=`500 28px ${FB}`; const lines=Math.min(3,Math.ceil(d.desc.length/36));
+    const dbh=lines*42+48;
+    ctx.strokeStyle='#1A1A1A'; ctx.lineWidth=2.5; rrect(ctx,c1,ly,colW,dbh,14); ctx.stroke();
+    ctx.fillStyle='#1A1A1A'; wrapText(ctx,d.desc,c1+22,ly+38,colW-44,42,3);
   }
 
-  const img = photo || (photoImgs.length ? photoImgs[0] : null);
-  if (tpl === 1) renderElegante(ctx, d, img);
-  else if (tpl === 2) renderModerno(ctx, d, img);
-  else renderImpacto(ctx, d, img);
+  agencyBar(ctx,d,CH-175,175);
 }
 
-// ═══════════════════════════════════════════════════════
-//  PREVIEW
-// ═══════════════════════════════════════════════════════
-let _timer = null;
-function debouncedPreview() { clearTimeout(_timer); _timer = setTimeout(drawPreview, 120); }
-
-function drawPreview() {
-  const mc = document.getElementById('mainCanvas');
-  // In slides mode, preview uses the active (tapped) thumbnail
-  const previewPhoto = (multiMode === 'slides' && photoImgs.length > 1)
-    ? photoImgs[activePhotoIdx()]
-    : (photoImgs.length ? photoImgs[0] : null);
-  renderTo(mc, previewPhoto);
-  const pv = document.getElementById('previewCanvas');
-  pv.width = CW; pv.height = CH;
-  pv.getContext('2d').drawImage(mc, 0, 0);
+// ── Main render ────────────────────────────────────────
+function renderTo(canvas,photo){
+  canvas.width=CW; canvas.height=CH;
+  const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,CW,CH);
+  const d=getData();
+  if(multiMode==='collage'&&photoImgs.length>1){renderCollage(ctx,d);return;}
+  const img=photo||(photoImgs.length?photoImgs[0]:null);
+  if(tpl===1) renderClasico(ctx,d,img);
+  else if(tpl===2) renderEditorial(ctx,d,img);
+  else renderImpacto(ctx,d,img);
 }
 
-// ═══════════════════════════════════════════════════════
-//  DOWNLOAD
-// ═══════════════════════════════════════════════════════
-async function download() {
-  const d    = getData();
-  const mc   = document.getElementById('mainCanvas');
-  const base = `story-${d.distrito.replace(/\s+/g, '-').toLowerCase()}`;
+// ── Preview ────────────────────────────────────────────
+let _t=null;
+function debouncedPreview(){clearTimeout(_t);_t=setTimeout(drawPreview,120);}
+function drawPreview(){
+  const mc=document.getElementById('mainCanvas');
+  const pp=(multiMode==='slides'&&photoImgs.length>1)?photoImgs[activePhotoIdx()]:(photoImgs.length?photoImgs[0]:null);
+  renderTo(mc,pp);
+  const pv=document.getElementById('previewCanvas');
+  pv.width=CW; pv.height=CH;
+  pv.getContext('2d').drawImage(mc,0,0);
+}
 
-  if (multiMode === 'slides' && photoImgs.length > 1) {
-    // ── Option A: one image per photo ──────────────────
+// ── Download ───────────────────────────────────────────
+async function download(){
+  const d=getData(), mc=document.getElementById('mainCanvas');
+  const base=`story-${d.distrito.replace(/\s+/g,'-').toLowerCase()}`;
+
+  if(multiMode==='slides'&&photoImgs.length>1){
     toast(`⏳ Generando ${photoImgs.length} stories…`);
-    const files = await Promise.all(photoImgs.map((img, i) =>
-      new Promise(resolve => {
-        renderTo(mc, img);
-        mc.toBlob(blob => {
-          resolve(new File([blob], `${base}-${i + 1}.jpg`, { type: 'image/jpeg' }));
-        }, 'image/jpeg', 0.94);
-      })
-    ));
-
-    if (navigator.canShare && navigator.canShare({ files })) {
-      try {
-        await navigator.share({ files, title: 'Stories listas para Instagram' });
-        return;
-      } catch (e) { if (e.name === 'AbortError') return; }
+    const files=await Promise.all(photoImgs.map((img,i)=>new Promise(res=>{
+      renderTo(mc,img);
+      mc.toBlob(b=>res(new File([b],`${base}-${i+1}.jpg`,{type:'image/jpeg'})),'image/jpeg',.94);
+    })));
+    if(navigator.canShare&&navigator.canShare({files})){
+      try{await navigator.share({files,title:'Stories listas para Instagram'});return;}
+      catch(e){if(e.name==='AbortError')return;}
     }
-    // Fallback: download one by one
-    files.forEach((file, i) => {
-      setTimeout(() => {
-        const link = document.createElement('a');
-        link.download = file.name;
-        link.href = URL.createObjectURL(file);
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(link.href), 10000);
-      }, i * 400);
-    });
+    files.forEach((f,i)=>setTimeout(()=>{const l=document.createElement('a');l.download=f.name;l.href=URL.createObjectURL(f);l.click();setTimeout(()=>URL.revokeObjectURL(l.href),10000);},i*400));
     toast(`✅ ${photoImgs.length} stories descargadas`);
-
   } else {
-    // ── Option B: collage or single photo ──────────────
-    renderTo(mc, photoImgs[0] || null);
-    mc.toBlob(async blob => {
-      const fname = `${base}.jpg`;
-      const file  = new File([blob], fname, { type: 'image/jpeg' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try { await navigator.share({ files: [file], title: 'Story lista para Instagram' }); return; }
-        catch (e) { if (e.name === 'AbortError') return; }
+    renderTo(mc,photoImgs[0]||null);
+    mc.toBlob(async b=>{
+      const fname=`${base}.jpg`, file=new File([b],fname,{type:'image/jpeg'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file],title:'Story lista para Instagram'});return;}
+        catch(e){if(e.name==='AbortError')return;}
       }
-      const link = document.createElement('a');
-      link.download = fname;
-      link.href = URL.createObjectURL(blob);
-      link.click();
-      setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+      const l=document.createElement('a');l.download=fname;l.href=URL.createObjectURL(b);l.click();
+      setTimeout(()=>URL.revokeObjectURL(l.href),10000);
       toast('✅ Story descargada — ¡lista para Instagram!');
-    }, 'image/jpeg', 0.94);
+    },'image/jpeg',.94);
   }
 }
 
-// ═══════════════════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════════════════
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3200);
+// ── Toast ──────────────────────────────────────────────
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3200);
 }
 
-// ── Init ──
 drawPreview();
 </script>
 </body>
