@@ -560,9 +560,10 @@ function renderClasico(ctx,d,photo){
   // Logo bottom-right
   drawLogo(ctx,CW-70,CH-240,360,170,'right',false);
 
-  // Contact
-  ctx.fillStyle='rgba(255,255,255,.40)'; ctx.font=`300 26px ${FB}`; ctx.textAlign='center';
-  drawContactLine(ctx, CW/2, CH-38, 'rgba(255,255,255,.40)', 26);
+  // Name + Contact
+  ctx.fillStyle='rgba(255,255,255,.70)'; ctx.font=`600 30px ${FB}`; ctx.textAlign='center';
+  ctx.fillText('ORIETTA SOTOMAYOR · REALTOR', CW/2, CH-82);
+  drawContactLine(ctx, CW/2, CH-38, 'rgba(255,255,255,.45)', 26);
 }
 
 // ──────────────────────────────────────────────────────
