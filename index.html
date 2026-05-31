@@ -221,10 +221,6 @@
   <div class="card">
     <div class="card-title">📱 Contacto</div>
     <div class="field">
-      <label class="lbl" for="wp">WhatsApp (opcional)</label>
-      <input class="inp" type="tel" id="wp" placeholder="+51 999 999 999" oninput="debouncedPreview()">
-    </div>
-    <div class="field">
       <label class="lbl" for="desc">Tagline / descripción (opcional)</label>
       <textarea class="inp" id="desc" placeholder="Ej: Perfecto para inversión · Vista al mar y parque" oninput="debouncedPreview()"></textarea>
     </div>
@@ -258,9 +254,34 @@ let logoImg   = null;
 })();
 let multiMode = 'slides';
 
+
+// ── WhatsApp icon preload ──────────────────────────────
+let waImg = null;
+(function(){
+  const _wa = new Image();
+  _wa.onload = () => { waImg = _wa; };
+  _wa.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTcuNDcyIDE0LjM4MmMtLjI5Ny0uMTQ5LTEuNzU4LS44NjctMi4wMy0uOTY3LS4yNzMtLjA5OS0uNDcxLS4xNDgtLjY3LjE1LS4xOTcuMjk3LS43NjcuOTY2LS45NCAxLjE2NC0uMTczLjE5OS0uMzQ3LjIyMy0uNjQ0LjA3NS0uMjk3LS4xNS0xLjI1NS0uNDYzLTIuMzktMS40NzUtLjg4My0uNzg4LTEuNDgtMS43NjEtMS42NTMtMi4wNTktLjE3My0uMjk3LS4wMTgtLjQ1OC4xMy0uNjA2LjEzNC0uMTMzLjI5OC0uMzQ3LjQ0Ni0uNTIuMTQ5LS4xNzQuMTk4LS4yOTguMjk4LS40OTcuMDk5LS4xOTguMDUtLjM3MS0uMDI1LS41Mi0uMDc1LS4xNDktLjY2OS0xLjYxMi0uOTE2LTIuMjA3LS4yNDItLjU3OS0uNDg3LS41LS42NjktLjUxLS4xNzMtLjAwOC0uMzcxLS4wMS0uNTctLjAxLS4xOTggMC0uNTIuMDc0LS43OTIuMzcyLS4yNzIuMjk3LTEuMDQgMS4wMTYtMS4wNCAyLjQ3OSAwIDEuNDYyIDEuMDY1IDIuODc1IDEuMjEzIDMuMDc0LjE0OS4xOTggMi4wOTYgMy4yIDUuMDc3IDQuNDg3LjcwOS4zMDYgMS4yNjIuNDg5IDEuNjk0LjYyNS43MTIuMjI3IDEuMzYuMTk1IDEuODcxLjExOC41NzEtLjA4NSAxLjc1OC0uNzE5IDIuMDA2LTEuNDEzLjI0OC0uNjk0LjI0OC0xLjI4OS4xNzMtMS40MTMtLjA3NC0uMTI0LS4yNzItLjE5OC0uNTctLjM0N3ptLTUuNDIxIDcuNDAzaC0uMDA0YTkuODcgOS44NyAwIDAxLTUuMDMxLTEuMzc4bC0uMzYxLS4yMTQtMy43NDEuOTgyLjk5OC0zLjY0OC0uMjM1LS4zNzRhOS44NiA5Ljg2IDAgMDEtMS41MS01LjI2Yy4wMDEtNS40NSA0LjQzNi05Ljg4NCA5Ljg4OC05Ljg4NCAyLjY0IDAgNS4xMjIgMS4wMyA2Ljk4OCAyLjg5OGE5LjgyNSA5LjgyNSAwIDAxMi44OTMgNi45OTRjLS4wMDMgNS40NS00LjQzNyA5Ljg4NC05Ljg4NSA5Ljg4NHoiLz48L3N2Zz4=';
+})();
 // ── Font loading ───────────────────────────────────────
 document.fonts.ready.then(drawPreview);
 
+
+// ── Contact line with WhatsApp icon ───────────────────
+function drawContactLine(ctx, cx, y, color, sz) {
+  const phone = '964 109 277';
+  const text  = phone + '   ·   @verodepasymas';
+  ctx.font = `300 ${sz}px ${FB}`;
+  const tw = ctx.measureText(text).width;
+  const iconSz = Math.round(sz * 1.3);
+  const gap = Math.round(sz * 0.5);
+  const totalW = iconSz + gap + tw;
+  let x = cx - totalW / 2;
+  if (waImg) ctx.drawImage(waImg, x, y - iconSz * 0.82, iconSz, iconSz);
+  x += iconSz + gap;
+  ctx.fillStyle = color; ctx.textAlign = 'left';
+  ctx.fillText(text, x, y);
+  ctx.textAlign = 'center';
+}
 // ── Template selection ─────────────────────────────────
 function setTpl(n) {
   tpl = n;
@@ -385,7 +406,7 @@ function getData() {
     banos:  hideDets?'':document.getElementById('banos').value,
     area:   document.getElementById('area').value,
     estac:  document.getElementById('estac').value,
-    wp:     document.getElementById('wp').value.trim(),
+    wp:     '964109277',
     desc:   document.getElementById('desc').value.trim(),
     feats,  photoPos: parseInt(document.getElementById('photoPos').value)/100,
   };
@@ -493,7 +514,7 @@ function agencyBar(ctx,d,y,h){
   ctx.fillStyle=WHITE; ctx.font=`700 40px ${FB}`; ctx.fillText('ORIETTA SOTOMAYOR',CW/2,y+62);
   ctx.fillStyle=GOLD;  ctx.font=`500 26px ${FB}`; ctx.fillText('REALTOR  ·  LIMA, PERÚ',CW/2,y+102);
   ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font=`400 28px ${FB}`;
-  ctx.fillText(d.wp?`${d.wp}   ·   @verodepasymas`:'📷  @verodepasymas',CW/2,y+148);
+  drawContactLine(ctx, CW/2, y+148, 'rgba(255,255,255,.7)', 28);
 }
 
 // ──────────────────────────────────────────────────────
@@ -547,7 +568,7 @@ function renderClasico(ctx,d,photo){
 
   // Contact
   ctx.fillStyle='rgba(255,255,255,.40)'; ctx.font=`300 26px ${FB}`; ctx.textAlign='center';
-  ctx.fillText(d.wp?`${d.wp}   ·   @verodepasymas`:'@verodepasymas',CW/2,CH-38);
+  drawContactLine(ctx, CW/2, CH-38, 'rgba(255,255,255,.40)', 26);
 }
 
 // ──────────────────────────────────────────────────────
@@ -645,7 +666,7 @@ function renderImpacto(ctx,d,photo){
   ctx.fillStyle='rgba(255,255,255,.82)'; ctx.font=`600 32px ${FB}`; ctx.textAlign='left';
   ctx.fillText('ORIETTA SOTOMAYOR · REALTOR',70,y); y-=48;
   ctx.fillStyle=GOLD; ctx.font=`400 26px ${FB}`;
-  ctx.fillText(d.wp?`${d.wp}  ·  @verodepasymas`:'@verodepasymas',70,y); y-=60;
+  drawContactLine(ctx, CW/2, y, GOLD, 26); y-=60;
 
   if(d.feats.length){ctx.fillStyle='rgba(255,255,255,.78)';ctx.font=`400 28px ${FB}`;ctx.textAlign='left';ctx.fillText(d.feats.slice(0,4).join('  ·  '),70,y);y-=56;}
   if(d.desc){ctx.fillStyle='rgba(255,255,255,.65)';ctx.font=`300 italic 30px ${FB}`;ctx.textAlign='left';y-=50;wrapText(ctx,`"${d.desc}"`,70,y,CW-140,44,2);y-=20;}
