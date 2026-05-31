@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Story Creator — @verodepasymas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #1B2A4A;
+      --gold:  #D4AF37;
+      --cream: #F5EDE0;
+      --white: #FFFFFF;
+      --card:  #FFFFFF;
+      --text:  #1A1A1A;
+      --muted: #888;
+      --border: #E4D9CC;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100dvh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 14px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 16px rgba(0,0,0,.25);
+    }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
+      letter-spacing: .4px;
+    }
+    .header p {
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* ── Container ──────────────────────────────────────── */
+    .page { max-width: 480px; margin: 0 auto; padding: 14px 14px 40px; }
+
+    /* ── Cards ──────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 10px rgba(0,0,0,.07);
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--navy);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--cream);
+    }
+
+    /* ── Preview ────────────────────────────────────────── */
+    .preview-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    #previewCanvas {
+      border-radius: 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.18);
+      display: block;
+      width: 168px;
+      height: 298px;
+      background: var(--navy);
+    }
+    .tpl-row {
+      display: flex;
+      gap: 8px;
+    }
+    .tpl-btn {
+      flex: 1;
+      padding: 9px 6px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .18s;
+      text-align: center;
+    }
+    .tpl-btn.active {
+      border-color: var(--gold);
+      background: #FFFBF0;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* ── Photo upload ───────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--gold);
+      border-radius: 12px;
+      padding: 22px 12px;
+      text-align: center;
+      background: #FFFBF0;
+      cursor: pointer;
+      transition: background .15s;
+      position: relative;
+    }
+    .upload-zone:active { background: #FFF5D6; }
+    .upload-icon { font-size: 32px; }
+    .upload-zone strong { display: block; font-size: 14px; color: var(--navy); margin: 6px 0 3px; }
+    .upload-zone span { font-size: 12px; color: var(--muted); }
+    #photoInput { display: none; }
+    #photoThumb {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Position slider */
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .slider-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    input[type=range] {
+      flex: 1;
+      accent-color: var(--navy);
+      height: 4px;
+    }
+
+    /* ── Radio pills ────────────────────────────────────── */
+    .pill-group { display: flex; gap: 8px; }
+    .pill-option { flex: 1; position: relative; }
+    .pill-option input { position: absolute; opacity: 0; width: 0; }
+    .pill-option label {
+      display: block;
+      text-align: center;
+      padding: 10px 8px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .pill-option input:checked + label {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* ── Form fields ────────────────────────────────────── */
+    .field { margin-bottom: 12px; }
+    .field:last-child { margin-bottom: 0; }
+    label.lbl {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .inp {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 13px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--white);
+      -webkit-appearance: none;
+      transition: border-color .18s;
+    }
+    .inp:focus { outline: none; border-color: var(--gold); }
+    select.inp { cursor: pointer; }
+    textarea.inp { resize: none; height: 78px; }
+
+    .price-row { display: flex; gap: 8px; }
+    .currency {
+      width: 68px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 6px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      background: var(--white);
+      -webkit-appearance: none;
+      color: var(--navy);
+    }
+    .currency:focus { outline: none; border-color: var(--gold); }
+
+    /* ── Stats row ──────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .stat-box { text-align: center; }
+    .stat-box .lbl { text-align: center; }
+    .stat-inp {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 4px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      text-align: center;
+      background: var(--white);
+      -webkit-appearance: none;
+    }
+    .stat-inp:focus { outline: none; border-color: var(--gold); }
+
+    /* ── Checkboxes ─────────────────────────────────────── */
+    .checks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+    .chk-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .chk-item input { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; }
+    .chk-item label { font-size: 12px; color: #555; cursor: pointer; line-height: 1.2; }
+    .chk-item:has(input:checked) { border-color: var(--navy); background: #EEF2FF; }
+
+    /* ── Download button ────────────────────────────────── */
+    .dl-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold) 0%, #E8C967 100%);
+      color: var(--navy);
+      border: none;
+      border-radius: 14px;
+      padding: 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 18px rgba(212,175,55,.35);
+      transition: all .18s;
+      margin-bottom: 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dl-btn:active { transform: scale(.97); }
+
+    /* ── Toast ──────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--navy);
+      color: var(--white);
+      padding: 12px 22px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      transition: transform .28s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Hidden full-res canvas */
+    #mainCanvas { display: none; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <h1>Story Creator 🏠</h1>
+  <p>Veronica Arosemena · @verodepasymas</p>
+</header>
+
+<div class="page">
+
+  <!-- ── PREVIEW ─────────────────────────────── -->
+  <div class="card">
+    <div class="card-title">Vista previa</div>
+    <div class="preview-wrap">
+      <canvas id="previewCanvas"></canvas>
+      <div class="tpl-row">
+        <button class="tpl-btn active" onclick="setTpl(1)">✨ Elegante</button>
+        <button class="tpl-btn"        onclick="setTpl(2)">🔲 Moderno</button>
+        <button class="tpl-btn"        onclick="setTpl(3)">⚡ Impacto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOTO ───────────────────────────────── -->
+  <div class="card">
+    <div class="card-title">📸 Foto de la propiedad</div>
+    <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
+      <div class="upload-icon">🏠</div>
+      <strong>Toca para agregar foto</strong>
+      <span>JPG · PNG · HEIC</span>
+    </div>
+    <input type="file" id="photoInput" accept="image/*" onchange="onPhoto(event)">
+    <img id="photoThumb" alt="foto">
+    <div class="slider-row" id="posRow" style="display:none">
+      <span class="slider-label">Posición foto</span>
+      <input type="range" id="photoPos" min="0" max="100" value="50" oninput="debouncedPreview()">
+    </div>
+  </div>
+
+  <!-- ── OPERACIÓN ──────────────────────────── -->
+  <div class="card">
+    <div class="card-title">🏷️ Operación y tipo</div>
+    <div class="field">
+      <div class="pill-group">
+        <div class="pill-option">
+          <input type="radio" name="op" id="opVenta" value="VENTA" checked onchange="debouncedPreview()">
+          <label for="opVenta">🤝 Venta</label>
+        </div>
+        <div class="pill-option">
+          <input type="radio" name="op" id="opAlq" value="ALQUILER" onchange="debouncedPreview()">
+          <label for="opAlq">🔑 Alquiler</label>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="lbl" for="tipoProp">Tipo de propiedad</label>
+      <select class="inp" id="tipoProp" onchange="debouncedPreview()">
+        <option value="Departamento">Departamento</option>
+        <option value="Casa">Casa</option>
+        <option value="Penthouse">Penthouse</option>
+        <option value="Duplex">Dúplex</option>
+        <option value="Terreno">Terreno</option>
+        <option value="Oficina">Oficina</option>
+        <option value="Local comercial">Local comercial</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── UBICACIÓN & PRECIO ─────────────────── -->
+  <div class="card">
+    <div class="card-title">📍 Ubicación y precio</div>
+    <div class="field">
+      <label class="lbl" for="distrito">Distrito</label>
+      <input class="inp" type="text" id="distrito" placeholder="Ej: Miraflores, San Isidro…" oninput="debouncedPreview()">
+    </div>
+    <div class="field">
+      <label class="lbl" for="precio">Precio</label>
+      <div class="price-row">
+        <select class="currency" id="moneda" onchange="debouncedPreview()">
+          <option value="$">$</option>
+          <option value="S/">S/</option>
+        </select>
+        <input class="inp" type="text" id="precio" placeholder="180,000" oninput="debouncedPreview()">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DETALLES ───────────────────────────── -->
+  <div class="card" id="detallesCard">
+    <div class="card-title">🔢 Detalles</div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <label class="lbl" for="dorm">🛏 Dorm.</label>
+        <input class="stat-inp" type="number" id="dorm" value="3" min="0" max="20" oninput="debouncedPreview()">
+      </div>
+      <div class="stat-box">
+        <label class="lbl" for="banos">🚿 Baños</label>
+        <input class="stat-inp" type="number" id="banos" value="2" min="0" max="20" oninput="debouncedPreview()">
+      </div>
+      <div class="stat-box">
+        <label class="lbl" for="area">📐 m²</label>
+        <input class="stat-inp" type="number" id="area" value="120" min="0" oninput="debouncedPreview()">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARACTERÍSTICAS ───────────────────── -->
+  <div class="card">
+    <div class="card-title">✨ Características</div>
+    <div class="checks-grid">
+      <div class="chk-item"><input type="checkbox" id="cEstac" onchange="debouncedPreview()"><label for="cEstac">🚗 Estacionamiento</label></div>
+      <div class="chk-item"><input type="checkbox" id="cTerr"  onchange="debouncedPreview()"><label for="cTerr">🌿 Terraza</label></div>
+      <div class="chk-item"><input type="checkbox" id="cPisc"  onchange="debouncedPreview()"><label for="cPisc">🏊 Piscina</label></div>
+      <div class="chk-item"><input type="checkbox" id="cJard"  onchange="debouncedPreview()"><label for="cJard">🌳 Jardín</label></div>
+      <div class="chk-item"><input type="checkbox" id="cGym"   onchange="debouncedPreview()"><label for="cGym">💪 Gimnasio</label></div>
+      <div class="chk-item"><input type="checkbox" id="cSeg"   onchange="debouncedPreview()"><label for="cSeg">🔒 Seguridad 24h</label></div>
+      <div class="chk-item"><input type="checkbox" id="cVista" onchange="debouncedPreview()"><label for="cVista">🌊 Vista al mar</label></div>
+      <div class="chk-item"><input type="checkbox" id="cAmob"  onchange="debouncedPreview()"><label for="cAmob">🛋️ Amoblado</label></div>
+    </div>
+  </div>
+
+  <!-- ── CONTACTO ───────────────────────────── -->
+  <div class="card">
+    <div class="card-title">📱 Contacto</div>
+    <div class="field">
+      <label class="lbl" for="wp">WhatsApp (opcional)</label>
+      <input class="inp" type="tel" id="wp" placeholder="+51 999 999 999" oninput="debouncedPreview()">
+    </div>
+    <div class="field">
+      <label class="lbl" for="desc">Descripción corta (opcional)</label>
+      <textarea class="inp" id="desc" placeholder="Ej: Excelente ubicación, 2 cuadras del Malecón…" oninput="debouncedPreview()"></textarea>
+    </div>
+  </div>
+
+  <!-- ── DOWNLOAD ───────────────────────────── -->
+  <button class="dl-btn" onclick="download()">
+    ⬇️ Descargar Story para Instagram
+  </button>
+
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+<canvas id="mainCanvas"></canvas>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════
+const CW = 1080, CH = 1920;
+const NAVY  = '#1B2A4A';
+const GOLD  = '#D4AF37';
+const WHITE = '#FFFFFF';
+const CREAM = '#F5EDE0';
+const FONT_SERIF = '"Playfair Display", Georgia, serif';
+const FONT_SANS  = '"Poppins", "Helvetica Neue", Arial, sans-serif';
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let tpl = 1;
+let photoImg = null;
+
+// ═══════════════════════════════════════════════════════
+//  FONT LOADING
+// ═══════════════════════════════════════════════════════
+document.fonts.ready.then(drawPreview);
+
+// ═══════════════════════════════════════════════════════
+//  TEMPLATE SELECTION
+// ═══════════════════════════════════════════════════════
+function setTpl(n) {
+  tpl = n;
+  document.querySelectorAll('.tpl-btn').forEach((b, i) => b.classList.toggle('active', i + 1 === n));
+  drawPreview();
+}
+
+// ═══════════════════════════════════════════════════════
+//  PHOTO HANDLING
+// ═══════════════════════════════════════════════════════
+function onPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      photoImg = img;
+      const thumb = document.getElementById('photoThumb');
+      thumb.src = ev.target.result;
+      thumb.style.display = 'block';
+      document.getElementById('posRow').style.display = 'flex';
+      drawPreview();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══════════════════════════════════════════════════════
+//  FORM DATA
+// ═══════════════════════════════════════════════════════
+function getData() {
+  const chk = id => document.getElementById(id).checked;
+  const feats = [
+    chk('cEstac') && 'Estacionamiento',
+    chk('cTerr')  && 'Terraza',
+    chk('cPisc')  && 'Piscina',
+    chk('cJard')  && 'Jardín',
+    chk('cGym')   && 'Gimnasio',
+    chk('cSeg')   && 'Seguridad 24h',
+    chk('cVista') && 'Vista al mar',
+    chk('cAmob')  && 'Amoblado',
+  ].filter(Boolean);
+
+  const tipo = document.getElementById('tipoProp').value;
+  const hideDets = ['Terreno'].includes(tipo);
+
+  return {
+    op:       document.querySelector('input[name=op]:checked')?.value || 'VENTA',
+    tipo,
+    distrito: document.getElementById('distrito').value.trim() || 'Lima',
+    moneda:   document.getElementById('moneda').value,
+    precio:   document.getElementById('precio').value.trim(),
+    dorm:     hideDets ? '' : document.getElementById('dorm').value,
+    banos:    hideDets ? '' : document.getElementById('banos').value,
+    area:     document.getElementById('area').value,
+    wp:       document.getElementById('wp').value.trim(),
+    desc:     document.getElementById('desc').value.trim(),
+    feats,
+    photoPos: parseInt(document.getElementById('photoPos').value) / 100,
+  };
+}
+
+// ═══════════════════════════════════════════════════════
+//  CANVAS UTILS
+// ═══════════════════════════════════════════════════════
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+/**
+ * Draws wrapped text. Returns total height used.
+ * ctx.textAlign should be set before calling.
+ * For 'center': x = center X
+ * For 'left':   x = left X
+ */
+function wrapText(ctx, text, x, y, maxWidth, lineH, maxLines = 99) {
+  if (!text) return 0;
+  const words = text.split(' ');
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+      if (lines.length >= maxLines) break;
+    } else {
+      line = test;
+    }
+  }
+  if (line && lines.length < maxLines) lines.push(line);
+  if (lines.length === maxLines) {
+    let last = lines[maxLines - 1];
+    while (ctx.measureText(last + '…').width > maxWidth && last.length > 1) last = last.slice(0, -1);
+    lines[maxLines - 1] = last + '…';
+  }
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineH));
+  return lines.length * lineH;
+}
+
+function drawPhotoBg(ctx, img, pos = 0.5, clipH = CH) {
+  const scale = Math.max(CW / img.width, clipH / img.height);
+  const sw = img.width * scale;
+  const sh = img.height * scale;
+  const sx = (CW - sw) / 2;
+  const maxOffY = Math.max(0, sh - clipH);
+  const sy = -maxOffY * pos;
+  ctx.drawImage(img, sx, sy, sw, sh);
+}
+
+function placeholderBg(ctx, clipH = CH) {
+  const g = ctx.createLinearGradient(0, 0, CW, clipH);
+  g.addColorStop(0, '#1B2A4A');
+  g.addColorStop(1, '#2D4470');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, CW, clipH);
+  // Watermark text
+  ctx.fillStyle = 'rgba(255,255,255,.07)';
+  ctx.font = `700 140px ${FONT_SERIF}`;
+  ctx.textAlign = 'center';
+  ctx.fillText('FOTO', CW / 2, clipH / 2 + 50);
+}
+
+function opBadge(ctx, op, x, y) {
+  const label = op === 'VENTA' ? 'EN VENTA' : 'EN ALQUILER';
+  const bgCol = op === 'VENTA' ? GOLD : '#2A7A50';
+  const tw = ctx.measureText(label).width;
+  const ph = 36, pv = 18, r = 40;
+  const bw = tw + ph * 2;
+  ctx.fillStyle = bgCol;
+  rrect(ctx, x, y, bw, 76, r);
+  ctx.fill();
+  ctx.fillStyle = op === 'VENTA' ? NAVY : WHITE;
+  ctx.font = `700 34px ${FONT_SANS}`;
+  ctx.textAlign = 'left';
+  ctx.fillText(label, x + ph, y + 52);
+  return bw;
+}
+
+function agencyBar(ctx, d, y, h) {
+  ctx.fillStyle = 'rgba(27,42,74,.93)';
+  ctx.fillRect(0, y, CW, h);
+  ctx.fillStyle = GOLD;
+  ctx.fillRect(0, y, CW, 5);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = WHITE;
+  ctx.font = `700 40px ${FONT_SANS}`;
+  ctx.fillText('VERONICA AROSEMENA', CW / 2, y + 62);
+
+  ctx.fillStyle = GOLD;
+  ctx.font = `500 26px ${FONT_SANS}`;
+  ctx.fillText('REALTOR  ·  LIMA, PERÚ', CW / 2, y + 102);
+
+  ctx.fillStyle = 'rgba(255,255,255,.7)';
+  ctx.font = `400 28px ${FONT_SANS}`;
+  const contact = d.wp ? `${d.wp}   ·   @verodepasymas` : '📷  @verodepasymas';
+  ctx.fillText(contact, CW / 2, y + 148);
+}
+
+function statsRow(ctx, d, cx, y, color = WHITE, muted = 'rgba(255,255,255,.6)') {
+  const items = [];
+  if (d.dorm  && +d.dorm  > 0) items.push({ val: d.dorm,       lbl: 'Dormitorios', ico: '🛏' });
+  if (d.banos && +d.banos > 0) items.push({ val: d.banos,      lbl: 'Baños',       ico: '🚿' });
+  if (d.area  && +d.area  > 0) items.push({ val: d.area + ' m²', lbl: 'Área',      ico: '📐' });
+  if (!items.length) return;
+
+  const step = items.length === 1 ? 0 : (items.length === 2 ? 380 : 310);
+  const startX = cx - (items.length - 1) * step / 2;
+
+  items.forEach((it, i) => {
+    const x = startX + i * step;
+    ctx.fillStyle = color;
+    ctx.font = `700 66px ${FONT_SANS}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(it.val, x, y + 66);
+    ctx.fillStyle = muted;
+    ctx.font = `400 28px ${FONT_SANS}`;
+    ctx.fillText(`${it.ico} ${it.lbl}`, x, y + 108);
+  });
+
+  // Dividers
+  if (items.length > 1) {
+    ctx.strokeStyle = 'rgba(255,255,255,.2)';
+    ctx.lineWidth = 2;
+    for (let i = 1; i < items.length; i++) {
+      const dx = startX + i * step - step / 2;
+      ctx.beginPath(); ctx.moveTo(dx, y); ctx.lineTo(dx, y + 120); ctx.stroke();
+    }
+  }
+}
+
+function featsLine(ctx, feats, x, y, maxWidth, align, color = 'rgba(255,255,255,.82)') {
+  if (!feats.length) return;
+  ctx.fillStyle = color;
+  ctx.font = `400 28px ${FONT_SANS}`;
+  ctx.textAlign = align;
+  const line = feats.slice(0, 4).join('  ·  ');
+  wrapText(ctx, line, x, y, maxWidth, 40, 2);
+}
+
+// ═══════════════════════════════════════════════════════
+//  TEMPLATE 1 — ELEGANTE
+//  Dark gradient overlay, centered layout
+// ═══════════════════════════════════════════════════════
+function renderElegante(ctx, d) {
+  // Photo / placeholder
+  if (photoImg) drawPhotoBg(ctx, photoImg, d.photoPos);
+  else placeholderBg(ctx);
+
+  // Vignette gradient
+  const vig = ctx.createLinearGradient(0, 0, 0, CH);
+  vig.addColorStop(0,    'rgba(0,0,0,.60)');
+  vig.addColorStop(0.38, 'rgba(0,0,0,.18)');
+  vig.addColorStop(0.58, 'rgba(0,0,0,.24)');
+  vig.addColorStop(1,    'rgba(0,0,0,.88)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, CW, CH);
+
+  // ── TOP: badge + tipo + distrito
+  opBadge(ctx, d.op, 70, 100);
+
+  ctx.fillStyle = 'rgba(255,255,255,.80)';
+  ctx.font = `300 36px ${FONT_SANS}`;
+  ctx.textAlign = 'left';
+  ctx.fillText(d.tipo.toUpperCase(), 70, 250);
+
+  ctx.fillStyle = WHITE;
+  ctx.font = `700 80px ${FONT_SERIF}`;
+  ctx.textAlign = 'left';
+  wrapText(ctx, d.distrito, 70, 310, CW - 140, 92, 2);
+
+  // ── MIDDLE: stats band
+  const sY = 850;
+  ctx.fillStyle = 'rgba(0,0,0,.30)';
+  ctx.fillRect(0, sY - 30, CW, 180);
+  statsRow(ctx, d, CW / 2, sY);
+
+  // ── PRICE
+  if (d.precio) {
+    const pY = 1120;
+    ctx.fillStyle = 'rgba(255,255,255,.06)';
+    ctx.fillRect(0, pY - 30, CW, 220);
+
+    ctx.fillStyle = GOLD;
+    ctx.font = `600 34px ${FONT_SANS}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('PRECIO', CW / 2, pY + 40);
+
+    const priceStr = `${d.moneda} ${d.precio}`;
+    ctx.fillStyle = WHITE;
+    let fs = 104;
+    ctx.font = `700 ${fs}px ${FONT_SERIF}`;
+    while (ctx.measureText(priceStr).width > CW - 120 && fs > 58) {
+      fs -= 4;
+      ctx.font = `700 ${fs}px ${FONT_SERIF}`;
+    }
+    ctx.fillText(priceStr, CW / 2, pY + 160);
+  }
+
+  // ── FEATURES
+  featsLine(ctx, d.feats, CW / 2, 1420, CW - 120, 'center');
+
+  // ── DESCRIPTION
+  if (d.desc) {
+    ctx.fillStyle = 'rgba(255,255,255,.68)';
+    ctx.font = `300 italic 32px ${FONT_SANS}`;
+    ctx.textAlign = 'center';
+    wrapText(ctx, `"${d.desc}"`, CW / 2, d.feats.length ? 1520 : 1450, CW - 150, 46, 2);
+  }
+
+  // ── AGENCY BAR
+  agencyBar(ctx, d, CH - 215, 215);
+}
+
+// ═══════════════════════════════════════════════════════
+//  TEMPLATE 2 — MODERNO
+//  Photo top 60%, cream panel bottom
+// ═══════════════════════════════════════════════════════
+function renderModerno(ctx, d) {
+  const splitY = Math.round(CH * 0.60);
+
+  // Photo clip
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, 0, CW, splitY); ctx.clip();
+  if (photoImg) drawPhotoBg(ctx, photoImg, d.photoPos, splitY);
+  else placeholderBg(ctx, splitY);
+  ctx.restore();
+
+  // Photo → panel fade
+  const fade = ctx.createLinearGradient(0, splitY - 180, 0, splitY + 60);
+  fade.addColorStop(0, 'rgba(245,237,224,0)');
+  fade.addColorStop(1, 'rgba(245,237,224,1)');
+  ctx.fillStyle = fade;
+  ctx.fillRect(0, splitY - 180, CW, 240);
+
+  // Bottom cream panel
+  ctx.fillStyle = '#F5EDE0';
+  ctx.fillRect(0, splitY, CW, CH - splitY);
+
+  // Op badge on photo
+  opBadge(ctx, d.op, 70, 80);
+
+  // ── Panel content
+  let curY = splitY + 56;
+
+  // Tipo label (gold)
+  ctx.fillStyle = GOLD;
+  ctx.font = `600 30px ${FONT_SANS}`;
+  ctx.textAlign = 'left';
+  ctx.fillText(d.tipo.toUpperCase(), 70, curY);
+  curY += 56;
+
+  // Distrito (large serif)
+  ctx.fillStyle = NAVY;
+  ctx.font = `700 76px ${FONT_SERIF}`;
+  ctx.textAlign = 'left';
+  const dh = wrapText(ctx, d.distrito, 70, curY, CW - 140, 88, 2);
+  curY += dh + 28;
+
+  // Gold underline
+  ctx.fillStyle = GOLD;
+  ctx.fillRect(70, curY, 90, 5);
+  curY += 44;
+
+  // Stats
+  const statsItems = [];
+  if (d.dorm  && +d.dorm  > 0) statsItems.push(`🛏 ${d.dorm}`);
+  if (d.banos && +d.banos > 0) statsItems.push(`🚿 ${d.banos}`);
+  if (d.area  && +d.area  > 0) statsItems.push(`📐 ${d.area} m²`);
+
+  ctx.fillStyle = '#444';
+  ctx.font = `500 34px ${FONT_SANS}`;
+  ctx.textAlign = 'left';
+  ctx.fillText(statsItems.join('    '), 70, curY);
+  curY += 66;
+
+  // Price
+  if (d.precio) {
+    const priceStr = `${d.moneda} ${d.precio}`;
+    ctx.fillStyle = NAVY;
+    let fs = 96;
+    ctx.font = `700 ${fs}px ${FONT_SERIF}`;
+    while (ctx.measureText(priceStr).width > CW - 140 && fs > 56) {
+      fs -= 4;
+      ctx.font = `700 ${fs}px ${FONT_SERIF}`;
+    }
+    ctx.fillText(priceStr, 70, curY + 80);
+    curY += 100;
+  }
+
+  // Features
+  featsLine(ctx, d.feats, 70, curY + 50, CW - 140, 'left', '#666');
+  curY += 80;
+
+  // Desc
+  if (d.desc) {
+    ctx.fillStyle = '#888';
+    ctx.font = `300 italic 28px ${FONT_SANS}`;
+    ctx.textAlign = 'left';
+    wrapText(ctx, `"${d.desc}"`, 70, curY + 60, CW - 140, 42, 2);
+  }
+
+  // Agency bar
+  agencyBar(ctx, d, CH - 190, 190);
+}
+
+// ═══════════════════════════════════════════════════════
+//  TEMPLATE 3 — IMPACTO
+//  Full-bleed photo, heavy bottom gradient, big price
+// ═══════════════════════════════════════════════════════
+function renderImpacto(ctx, d) {
+  if (photoImg) drawPhotoBg(ctx, photoImg, d.photoPos);
+  else placeholderBg(ctx);
+
+  // Strong bottom gradient
+  const g = ctx.createLinearGradient(0, CH * 0.30, 0, CH);
+  g.addColorStop(0,    'rgba(0,0,0,0)');
+  g.addColorStop(0.35, 'rgba(0,0,0,.52)');
+  g.addColorStop(1,    'rgba(0,0,0,.94)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, CW, CH);
+
+  // Thin top accent bar
+  const accent = d.op === 'VENTA' ? GOLD : '#28A86E';
+  ctx.fillStyle = accent;
+  ctx.fillRect(0, 0, CW, 12);
+
+  // Op label top-right
+  ctx.fillStyle = accent;
+  ctx.font = `700 28px ${FONT_SANS}`;
+  ctx.textAlign = 'right';
+  ctx.fillText(d.op, CW - 70, 72);
+
+  // ── Bottom content, build up from bottom
+  let y = CH - 230;   // start above agency zone
+
+  // Agency (compact)
+  ctx.fillStyle = 'rgba(255,255,255,.82)';
+  ctx.font = `600 32px ${FONT_SANS}`;
+  ctx.textAlign = 'left';
+  ctx.fillText('VERONICA AROSEMENA · REALTOR', 70, y);
+  y -= 48;
+
+  ctx.fillStyle = GOLD;
+  ctx.font = `400 26px ${FONT_SANS}`;
+  const contact = d.wp ? `${d.wp}  ·  @verodepasymas` : '@verodepasymas';
+  ctx.fillText(contact, 70, y);
+  y -= 60;
+
+  // Feats
+  featsLine(ctx, d.feats, 70, y, CW - 140, 'left');
+  if (d.feats.length) y -= 56;
+
+  // Desc
+  if (d.desc) {
+    ctx.fillStyle = 'rgba(255,255,255,.65)';
+    ctx.font = `300 italic 30px ${FONT_SANS}`;
+    ctx.textAlign = 'left';
+    y -= 50;
+    wrapText(ctx, `"${d.desc}"`, 70, y, CW - 140, 44, 2);
+    y -= 20;
+  }
+
+  // Price (BIG)
+  if (d.precio) {
+    y -= 20;
+    const priceStr = `${d.moneda} ${d.precio}`;
+    ctx.fillStyle = GOLD;
+    let fs = 128;
+    ctx.font = `700 ${fs}px ${FONT_SERIF}`;
+    while (ctx.measureText(priceStr).width > CW - 140 && fs > 70) {
+      fs -= 5;
+      ctx.font = `700 ${fs}px ${FONT_SERIF}`;
+    }
+    ctx.fillText(priceStr, 70, y);
+    y -= fs + 20;
+  }
+
+  // Stats
+  const sItems = [];
+  if (d.dorm  && +d.dorm  > 0) sItems.push(`🛏 ${d.dorm}`);
+  if (d.banos && +d.banos > 0) sItems.push(`🚿 ${d.banos}`);
+  if (d.area  && +d.area  > 0) sItems.push(`${d.area} m²`);
+  if (sItems.length) {
+    ctx.fillStyle = 'rgba(255,255,255,.78)';
+    ctx.font = `400 38px ${FONT_SANS}`;
+    ctx.textAlign = 'left';
+    ctx.fillText(sItems.join('   '), 70, y);
+    y -= 66;
+  }
+
+  // Gold line
+  ctx.fillStyle = GOLD;
+  ctx.fillRect(70, y, 90, 5);
+  y -= 44;
+
+  // Distrito
+  ctx.fillStyle = WHITE;
+  ctx.font = `700 88px ${FONT_SERIF}`;
+  ctx.textAlign = 'left';
+  const dh2 = wrapText(ctx, d.distrito, 70, y - 80, CW - 140, 100, 2);
+  y -= dh2 + 40;
+
+  // Tipo
+  ctx.fillStyle = 'rgba(255,255,255,.62)';
+  ctx.font = `300 36px ${FONT_SANS}`;
+  ctx.fillText(d.tipo.toUpperCase(), 70, y);
+}
+
+// ═══════════════════════════════════════════════════════
+//  MAIN RENDER
+// ═══════════════════════════════════════════════════════
+function renderTo(canvas) {
+  canvas.width = CW;
+  canvas.height = CH;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, CW, CH);
+  const d = getData();
+  if (tpl === 1) renderElegante(ctx, d);
+  else if (tpl === 2) renderModerno(ctx, d);
+  else renderImpacto(ctx, d);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PREVIEW  (renders at 1/4 scale via CSS)
+// ═══════════════════════════════════════════════════════
+let _timer = null;
+function debouncedPreview() {
+  clearTimeout(_timer);
+  _timer = setTimeout(drawPreview, 120);
+}
+
+function drawPreview() {
+  const mc = document.getElementById('mainCanvas');
+  renderTo(mc);
+  const pv = document.getElementById('previewCanvas');
+  pv.width  = CW;
+  pv.height = CH;
+  pv.getContext('2d').drawImage(mc, 0, 0);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DOWNLOAD
+// ═══════════════════════════════════════════════════════
+function download() {
+  const mc = document.getElementById('mainCanvas');
+  renderTo(mc);
+  const d = getData();
+  const fname = `story-${d.distrito.replace(/\s+/g, '-').toLowerCase()}.jpg`;
+  const link  = document.createElement('a');
+  link.download = fname;
+  link.href = mc.toDataURL('image/jpeg', 0.94);
+  link.click();
+  toast('✅ Story descargada — ¡lista para Instagram!');
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ── Init ──
+drawPreview();
+</script>
+</body>
+</html>
