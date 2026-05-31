@@ -261,6 +261,8 @@
       <div class="chk-item"><input type="checkbox" id="cSeg"   onchange="debouncedPreview()"><label for="cSeg">🔒 Seguridad 24h</label></div>
       <div class="chk-item"><input type="checkbox" id="cVista" onchange="debouncedPreview()"><label for="cVista">🌊 Vista al mar</label></div>
       <div class="chk-item"><input type="checkbox" id="cAmob"  onchange="debouncedPreview()"><label for="cAmob">🛋️ Amoblado</label></div>
+      <div class="chk-item"><input type="checkbox" id="cVParq" onchange="debouncedPreview()"><label for="cVParq">🌳 Vista a parque</label></div>
+      <div class="chk-item"><input type="checkbox" id="cSParq" onchange="debouncedPreview()"><label for="cSParq">🚪 Salida a parque</label></div>
     </div>
   </div>
 
@@ -478,6 +480,8 @@ function getData() {
     chk('cSeg')   && 'Seguridad 24h',
     chk('cVista') && 'Vista al mar',
     chk('cAmob')  && 'Amoblado',
+    chk('cVParq') && 'Vista a parque',
+    chk('cSParq') && 'Salida a parque',
   ].filter(Boolean);
 
   const tipo = document.getElementById('tipoProp').value;
