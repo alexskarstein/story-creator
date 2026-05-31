@@ -997,11 +997,28 @@ function download() {
   renderTo(mc);
   const d = getData();
   const fname = `story-${d.distrito.replace(/\s+/g, '-').toLowerCase()}.jpg`;
-  const link  = document.createElement('a');
-  link.download = fname;
-  link.href = mc.toDataURL('image/jpeg', 0.94);
-  link.click();
-  toast('✅ Story descargada — ¡lista para Instagram!');
+
+  mc.toBlob(async (blob) => {
+    // Use Web Share API on iOS — triggers native share sheet with "Save Image" → Photos
+    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fname, { type: 'image/jpeg' })] })) {
+      try {
+        await navigator.share({
+          files: [new File([blob], fname, { type: 'image/jpeg' })],
+          title: 'Story lista para Instagram',
+        });
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return; // user cancelled, do nothing
+      }
+    }
+    // Fallback for desktop / non-iOS
+    const link = document.createElement('a');
+    link.download = fname;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+    toast('✅ Story descargada — ¡lista para Instagram!');
+  }, 'image/jpeg', 0.94);
 }
 
 // ═══════════════════════════════════════════════════════
