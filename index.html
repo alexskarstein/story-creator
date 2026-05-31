@@ -53,9 +53,6 @@
     .mode-btn.active { border-color: var(--navy); background: var(--navy); color: var(--white); font-weight: 600; }
     .mode-hint { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; line-height: 1.4; }
 
-    .slider-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-    .slider-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
-    input[type=range] { flex: 1; accent-color: var(--navy); height: 4px; }
 
     /* Radio/checkbox pills */
     .pill-group { display: flex; gap: 8px; }
@@ -134,10 +131,6 @@
         <button class="mode-btn"        id="btnCollage" onclick="setMode('collage')">⊞ Collage</button>
       </div>
       <p class="mode-hint" id="modeHint"></p>
-    </div>
-    <div class="slider-row" id="posRow" style="display:none">
-      <span class="slider-label">Posición foto</span>
-      <input type="range" id="photoPos" min="0" max="100" value="50" oninput="debouncedPreview()">
     </div>
   </div>
 
@@ -371,7 +364,6 @@ function removePhoto(idx) {
 function showPhotoControls() {
   const n=photoImgs.length;
   document.getElementById('thumbStrip').style.display   = n ? 'flex':'none';
-  document.getElementById('posRow').style.display        = n ? 'flex':'none';
   document.getElementById('multiModeRow').style.display  = n>1 ? 'block':'none';
   if (n<=1 && multiMode==='collage') setMode('slides');
   if (n>1) updateModeHint();
@@ -408,7 +400,7 @@ function getData() {
     estac:  document.getElementById('estac').value,
     wp:     '964109277',
     desc:   document.getElementById('desc').value.trim(),
-    feats,  photoPos: parseInt(document.getElementById('photoPos').value)/100,
+    feats,  photoPos: 0.5,
   };
 }
 
@@ -541,8 +533,10 @@ function renderClasico(ctx,d,photo){
 
   // LEFT COLUMN: operation word + description + district
   const word = opWordInline(d.op);
-  const wordFS = word.length>14 ? 88 : word.length>7 ? 110 : 138;
-  ctx.fillStyle=WHITE; ctx.font=`700 ${wordFS}px ${FS}`; ctx.textAlign='left';
+  let wordFS = 155;
+  ctx.font = `700 ${wordFS}px ${FS}`;
+  while (wordFS > 55 && ctx.measureText(word).width > 440) { wordFS -= 3; ctx.font = `700 ${wordFS}px ${FS}`; }
+  ctx.fillStyle=WHITE; ctx.textAlign='left';
   ctx.fillText(word,70,darkY+wordFS+20);
 
   if(d.desc){
