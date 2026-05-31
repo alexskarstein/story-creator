@@ -263,7 +263,7 @@ document.fonts.ready.then(drawPreview);
 // ── Contact line with WhatsApp icon ───────────────────
 function drawContactLine(ctx, cx, y, color, sz) {
   const phone = '964 109 277';
-  const text  = phone + '   ·   @verodepasymas';
+  const text  = phone;
   ctx.font = `300 ${sz}px ${FB}`;
   const tw = ctx.measureText(text).width;
   const iconSz = Math.round(sz * 1.3);
@@ -461,9 +461,7 @@ function drawLogo(ctx,x,y,maxW,maxH,align='left',dark=false){
   const sub=Math.min(maxH*0.18,28);
   ctx.fillStyle=subtle; ctx.font=`300 ${sub}px ${FB}`;
   ctx.fillText('Vero Depas & Más',x,y+monSz+sub+10);
-  ctx.fillStyle=col; ctx.font=`500 ${sub*0.85}px ${FB}`;
-  ctx.fillText('@verodepasymas',x,y+monSz+sub*2.2+14);
-  return monSz+sub*2.5+20;
+  return monSz+sub+16;
 }
 
 // Vertical stats list (Image 1 style — "3 DORMS", "2 BAÑOS", etc.)
