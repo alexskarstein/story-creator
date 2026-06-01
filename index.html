@@ -285,17 +285,17 @@
   <!-- CONTÁCTAME -->
   <div id="sec-contact" class="post-section">
     <div class="card">
-      <div class="card-title">📍 ¿Dónde trabajo?</div>
-      <div class="field">
-        <label class="lbl" for="contactZonas">Distritos / zonas (opcional)</label>
-        <input class="inp" type="text" id="contactZonas" placeholder="Ej: Miraflores · San Isidro · Barranco" oninput="debouncedPreview()">
+      <div class="card-title">🤳 Foto de perfil</div>
+      <div class="upload-zone small" onclick="document.getElementById('contactPhotoInput').click()">
+        <strong id="contactPhotoLabel">Toca para subir tu foto</strong>
+        <span>La foto aparece centrada en el story</span>
       </div>
+      <input type="file" id="contactPhotoInput" accept="image/*" onchange="onContactPhoto(event)" style="display:none">
     </div>
     <div class="card">
-      <div class="card-title">✍️ Mensaje</div>
+      <div class="card-title">✍️ Llamada a la acción (opcional)</div>
       <div class="field">
-        <label class="lbl" for="contactTagline">Tagline o llamada a la acción</label>
-        <textarea class="inp" id="contactTagline" placeholder="Ej: ¿Buscas tu próximo hogar? ¡Escríbeme!" oninput="debouncedPreview()"></textarea>
+        <textarea class="inp" id="contactTagline" rows="3" placeholder="Ej: Si estás pensando en comprar, vender o alquilar…" oninput="debouncedPreview()"></textarea>
       </div>
     </div>
   </div>
@@ -354,6 +354,7 @@ let logoImg   = null;
 })();
 let multiMode = 'slides';
 let postType = 'listing';
+let contactPhotoImg = null;
 
 
 // ── WhatsApp icon preload ──────────────────────────────
@@ -363,6 +364,19 @@ let waImg = null;
   _wa.onload = () => { waImg = _wa; };
   _wa.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyNUQzNjYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTcuNDcyIDE0LjM4MmMtLjI5Ny0uMTQ5LTEuNzU4LS44NjctMi4wMy0uOTY3LS4yNzMtLjA5OS0uNDcxLS4xNDgtLjY3LjE1LS4xOTcuMjk3LS43NjcuOTY2LS45NCAxLjE2NC0uMTczLjE5OS0uMzQ3LjIyMy0uNjQ0LjA3NS0uMjk3LS4xNS0xLjI1NS0uNDYzLTIuMzktMS40NzUtLjg4My0uNzg4LTEuNDgtMS43NjEtMS42NTMtMi4wNTktLjE3My0uMjk3LS4wMTgtLjQ1OC4xMy0uNjA2LjEzNC0uMTMzLjI5OC0uMzQ3LjQ0Ni0uNTIuMTQ5LS4xNzQuMTk4LS4yOTguMjk4LS40OTcuMDk5LS4xOTguMDUtLjM3MS0uMDI1LS41Mi0uMDc1LS4xNDktLjY2OS0xLjYxMi0uOTE2LTIuMjA3LS4yNDItLjU3OS0uNDg3LS41LS42NjktLjUxLS4xNzMtLjAwOC0uMzcxLS4wMS0uNTctLjAxLS4xOTggMC0uNTIuMDc0LS43OTIuMzcyLS4yNzIuMjk3LTEuMDQgMS4wMTYtMS4wNCAyLjQ3OSAwIDEuNDYyIDEuMDY1IDIuODc1IDEuMjEzIDMuMDc0LjE0OS4xOTggMi4wOTYgMy4yIDUuMDc3IDQuNDg3LjcwOS4zMDYgMS4yNjIuNDg5IDEuNjk0LjYyNS43MTIuMjI3IDEuMzYuMTk1IDEuODcxLjExOC41NzEtLjA4NSAxLjc1OC0uNzE5IDIuMDA2LTEuNDEzLjI0OC0uNjk0LjI0OC0xLjI4OS4xNzMtMS40MTMtLjA3NC0uMTI0LS4yNzItLjE5OC0uNTctLjM0N3ptLTUuNDIxIDcuNDAzaC0uMDA0YTkuODcgOS44NyAwIDAxLTUuMDMxLTEuMzc4bC0uMzYxLS4yMTQtMy43NDEuOTgyLjk5OC0zLjY0OC0uMjM1LS4zNzRhOS44NiA5Ljg2IDAgMDEtMS41MS01LjI2Yy4wMDEtNS40NSA0LjQzNi05Ljg4NCA5Ljg4OC05Ljg4NCAyLjY0IDAgNS4xMjIgMS4wMyA2Ljk4OCAyLjg5OGE5LjgyNSA5LjgyNSAwIDAxMi44OTMgNi45OTRjLS4wMDMgNS40NS00LjQzNyA5Ljg4NC05Ljg4NSA5Ljg4NHoiLz48L3N2Zz4=';
 })();
+
+// ── Contact photo handling ─────────────────────────────
+function onContactPhoto(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => { contactPhotoImg = img; document.getElementById('contactPhotoLabel').textContent = '✅ Foto cargada · toca para cambiar'; drawPreview(); };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
 // ── Font loading ───────────────────────────────────────
 document.fonts.ready.then(drawPreview);
 
@@ -541,8 +555,7 @@ function getDataClosed() {
 }
 function getDataContact() {
   return {
-    zonas:    document.getElementById('contactZonas').value.trim(),
-    tagline:  document.getElementById('contactTagline').value.trim(),
+    tagline: document.getElementById('contactTagline').value.trim(),
     wp: '964109277',
   };
 }
@@ -952,58 +965,80 @@ function renderClosed(ctx, d) {
 }
 
 // ──────────────────────────────────────────────────────
-//  CONTÁCTAME
+//  CONTÁCTAME  (inspired by agency reference card)
 // ──────────────────────────────────────────────────────
 function renderContact(ctx, d) {
-  // Background
-  const bg=ctx.createLinearGradient(0,0,0,CH);
-  bg.addColorStop(0,'#121E33'); bg.addColorStop(1,'#1B2A4A');
-  ctx.fillStyle=bg; ctx.fillRect(0,0,CW,CH);
+  const BG = '#E2D9CE';
+  const INK = '#1A1A1A';
 
-  // Gold top bar
-  ctx.fillStyle=GOLD; ctx.fillRect(0,0,CW,14);
+  // Cream background
+  ctx.fillStyle=BG; ctx.fillRect(0,0,CW,CH);
 
-  // Subtle dot pattern
-  ctx.fillStyle='rgba(212,175,55,.05)';
-  for(let row=0;row<CH;row+=80) for(let col=0;col<CW;col+=80) {ctx.beginPath();ctx.arc(col,row,3,0,Math.PI*2);ctx.fill();}
+  // Thin border frame
+  ctx.strokeStyle='rgba(0,0,0,.55)'; ctx.lineWidth=6;
+  ctx.strokeRect(18,18,CW-36,CH-36);
 
-  // Large logo centered
-  if(logoImg){
-    const mH=420,mW=700,sc=Math.min(mW/logoImg.width,mH/logoImg.height);
-    const lw=logoImg.width*sc,lh=logoImg.height*sc;
-    ctx.drawImage(logoImg,(CW-lw)/2,160,lw,lh);
+  // "HOLA, SOY"
+  ctx.fillStyle='rgba(0,0,0,.55)'; ctx.font=`400 42px ${FB}`; ctx.textAlign='center';
+  ctx.letterSpacing='6px';
+  ctx.fillText('HOLA, SOY', CW/2, 180);
+  ctx.letterSpacing='0px';
+
+  // Big name — two lines
+  ctx.fillStyle=INK; ctx.textAlign='center';
+  let nameFS=185; ctx.font=`900 ${nameFS}px ${FB}`;
+  while(nameFS>80 && Math.max(ctx.measureText('ORIETTA').width,ctx.measureText('SOTOMAYOR').width)>CW-120){nameFS-=4;ctx.font=`900 ${nameFS}px ${FB}`;}
+  ctx.fillText('ORIETTA',   CW/2, 180+nameFS+10);
+  ctx.fillText('SOTOMAYOR', CW/2, 180+nameFS*2+24);
+
+  // "ASOCIADA DE"
+  const nameBottom = 180+nameFS*2+24;
+  ctx.fillStyle='rgba(0,0,0,.55)'; ctx.font=`400 36px ${FB}`; ctx.textAlign='center';
+  ctx.fillText('ASOCIADA DE', CW/2, nameBottom+70);
+
+  // "Vero Depas & Más" — serif
+  ctx.fillStyle=INK; ctx.font=`italic 700 68px ${FS}`; ctx.textAlign='center';
+  ctx.fillText('Vero Depas & Más', CW/2, nameBottom+154);
+
+  // Portrait photo area
+  const photoY = nameBottom + 200;
+  const photoW = 620, photoH = 680;
+  const photoX = (CW - photoW) / 2;
+
+  // VA watermark behind photo
+  ctx.save();
+  ctx.globalAlpha = 0.07;
+  ctx.fillStyle = INK; ctx.font = `900 520px ${FS}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('VA', CW/2 + 160, photoY + photoH * 0.65);
+  ctx.globalAlpha = 1; ctx.textBaseline = 'alphabetic';
+  ctx.restore();
+
+  // Photo or placeholder
+  if(contactPhotoImg){
+    ctx.save(); ctx.beginPath(); ctx.rect(photoX, photoY, photoW, photoH); ctx.clip();
+    drawImgCover(ctx, contactPhotoImg, photoX, photoY, photoW, photoH);
+    ctx.restore();
+  } else {
+    ctx.fillStyle='rgba(0,0,0,.10)'; ctx.fillRect(photoX, photoY, photoW, photoH);
+    ctx.fillStyle='rgba(0,0,0,.30)'; ctx.font=`400 36px ${FB}`; ctx.textAlign='center';
+    ctx.fillText('Sube tu foto de perfil', CW/2, photoY + photoH/2);
   }
 
-  // Name
-  ctx.fillStyle=WHITE; ctx.font=`700 72px ${FB}`; ctx.textAlign='center';
-  ctx.fillText('ORIETTA SOTOMAYOR',CW/2,760);
-  ctx.fillStyle=GOLD; ctx.font=`500 38px ${FB}`;
-  ctx.fillText('REALTOR · LIMA, PERÚ',CW/2,830);
-
-  // Divider
-  ctx.strokeStyle='rgba(212,175,55,.45)'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(160,890); ctx.lineTo(CW-160,890); ctx.stroke();
-
-  // Zonas
-  if(d.zonas){
-    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.font=`400 36px ${FB}`; ctx.textAlign='center';
-    wrapText(ctx,d.zonas,CW/2,980,860,54,2);
-  }
-
-  // Tagline
+  // CTA text
+  const ctaY = photoY + photoH + 70;
   if(d.tagline){
-    ctx.fillStyle='rgba(255,255,255,.55)'; ctx.font=`300 34px ${FS}`; ctx.textAlign='center';
-    wrapText(ctx,d.tagline,CW/2,1120,820,52,3);
+    ctx.fillStyle=INK; ctx.font=`700 38px ${FB}`; ctx.textAlign='center';
+    wrapText(ctx, d.tagline.toUpperCase(), CW/2, ctaY, 940, 54, 2);
+    ctx.fillStyle='rgba(0,0,0,.70)'; ctx.font=`400 34px ${FB}`; ctx.textAlign='center';
+    ctx.fillText('ME ENCANTARÍA PODER AYUDARTE.', CW/2, ctaY + 130);
   }
 
-  // Bottom
-  ctx.fillStyle=GOLD; ctx.fillRect(0,CH-200,CW,4);
-  ctx.fillStyle='rgba(27,42,74,.92)'; ctx.fillRect(0,CH-196,CW,196);
-  ctx.fillStyle=WHITE; ctx.font=`700 40px ${FB}`; ctx.textAlign='center';
-  ctx.fillText('ORIETTA SOTOMAYOR',CW/2,CH-128);
-  ctx.fillStyle=GOLD; ctx.font=`500 28px ${FB}`;
-  ctx.fillText('REALTOR · LIMA, PERÚ',CW/2,CH-84);
-  drawContactLine(ctx,CW/2,CH-38,'rgba(255,255,255,.65)',26);
+  // Contact lines
+  const cY = CH - 220;
+  ctx.fillStyle=INK; ctx.font=`400 34px ${FS}`; ctx.textAlign='center';
+  ctx.fillText('Escríbeme al  +51 964 109 277', CW/2, cY);
+  ctx.fillText('Sígueme en IG como @verodepasymas', CW/2, cY + 54);
+  ctx.fillText('@oriettasotomayor', CW/2, cY + 108);
 }
 
 // ──────────────────────────────────────────────────────
