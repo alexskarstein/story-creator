@@ -92,6 +92,19 @@
     .toast.show { transform: translateX(-50%) translateY(0); }
     #mainCanvas { display: none; }
 
+    /* ── Preview expand ── */
+    .preview-tap-wrap { cursor: pointer; position: relative; display: inline-block; }
+    .preview-tap-wrap:active { opacity: .85; }
+    .preview-zoom-hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 6px; }
+    #previewOverlay { position: fixed; inset: 0; background: rgba(0,0,0,.90); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+    #previewOverlay img { max-height: 95dvh; max-width: 95vw; border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,.5); }
+    #previewOverlay .overlay-close { position: absolute; top: 16px; right: 20px; font-size: 32px; color: white; background: none; border: none; cursor: pointer; line-height: 1; }
+    /* ── Char hint ── */
+    .char-hint { font-size: 11px; color: var(--muted); text-align: right; display: block; margin-top: 4px; }
+    .char-hint.over { color: #E53935; }
+    /* ── Clear button ── */
+    .clear-btn { width: 100%; background: none; border: 2px solid var(--border); border-radius: 14px; padding: 13px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .18s; margin-bottom: 20px; }
+    .clear-btn:active { background: #fff0f0; border-color: #E53935; color: #E53935; }
     /* ── Tab bar ── */
     .tab-bar { display: flex; gap: 6px; padding: 12px 0 4px; overflow-x: auto; scrollbar-width: none; }
     .tab-bar::-webkit-scrollbar { display: none; }
@@ -114,7 +127,10 @@
   <div class="card">
     <div class="card-title">Vista previa</div>
     <div class="preview-wrap">
-      <canvas id="previewCanvas"></canvas>
+      <div class="preview-tap-wrap" onclick="expandPreview()">
+        <canvas id="previewCanvas"></canvas>
+      </div>
+      <p class="preview-zoom-hint">🔍 Toca para ampliar</p>
       <div class="tpl-row" id="tplRow">
         <button class="tpl-btn active" onclick="setTpl(1)">🏠 Clásico</button>
         <button class="tpl-btn"        onclick="setTpl(2)">📋 Editorial</button>
@@ -196,7 +212,7 @@
           <option value="$">$</option>
           <option value="S/">S/</option>
         </select>
-        <input class="inp" type="text" id="precio" placeholder="180,000" oninput="debouncedPreview()">
+        <input class="inp" type="text" id="precio" placeholder="180,000" inputmode="numeric" oninput="formatPrice(this);debouncedPreview()">
       </div>
     </div>
   </div>
@@ -234,7 +250,8 @@
     <div class="card-title">📱 Contacto</div>
     <div class="field">
       <label class="lbl" for="desc">Tagline / descripción (opcional)</label>
-      <textarea class="inp" id="desc" placeholder="Ej: Perfecto para inversión · Vista al mar y parque" oninput="debouncedPreview()"></textarea>
+      <textarea class="inp" id="desc" placeholder="Ej: Perfecto para inversión · Vista al mar y parque" oninput="updateCharHint(this,'descHint',120);debouncedPreview()"></textarea>
+      <span class="char-hint" id="descHint"></span>
     </div>
   </div>
   </div><!-- /sec-listing -->
@@ -248,7 +265,7 @@
         <select class="currency" id="monedaAnterior" onchange="debouncedPreview()">
           <option value="$">$</option><option value="S/">S/</option>
         </select>
-        <input class="inp" type="text" id="precioAnterior" placeholder="200,000" oninput="debouncedPreview()">
+        <input class="inp" type="text" id="precioAnterior" placeholder="200,000" inputmode="numeric" oninput="formatPrice(this);debouncedPreview()">
       </div>
     </div>
   </div>
@@ -277,7 +294,8 @@
       </div>
       <div class="field">
         <label class="lbl" for="closedDesc">Mensaje (opcional)</label>
-        <textarea class="inp" id="closedDesc" placeholder="¡Gracias por confiar en mí!" oninput="debouncedPreview()"></textarea>
+        <textarea class="inp" id="closedDesc" placeholder="¡Gracias por confiar en mí!" oninput="updateCharHint(this,'closedDescHint',120);debouncedPreview()"></textarea>
+        <span class="char-hint" id="closedDescHint"></span>
       </div>
     </div>
   </div>
@@ -295,7 +313,8 @@
     <div class="card">
       <div class="card-title">✍️ Llamada a la acción (opcional)</div>
       <div class="field">
-        <textarea class="inp" id="contactTagline" rows="3" placeholder="Ej: Si estás pensando en comprar, vender o alquilar…" oninput="debouncedPreview()"></textarea>
+        <textarea class="inp" id="contactTagline" rows="3" placeholder="Ej: Si estás pensando en comprar, vender o alquilar…" oninput="updateCharHint(this,'contactTaglineHint',100);debouncedPreview()"></textarea>
+        <span class="char-hint" id="contactTaglineHint"></span>
       </div>
     </div>
   </div>
@@ -317,15 +336,18 @@
       <div class="card-title">📝 Contenido</div>
       <div class="field">
         <label class="lbl" for="infoTitulo">Título</label>
-        <input class="inp" type="text" id="infoTitulo" placeholder="Ej: ¿Sabías que Miraflores tiene el m² más alto de Lima?" oninput="debouncedPreview()">
+        <input class="inp" type="text" id="infoTitulo" placeholder="Ej: ¿Sabías que Miraflores tiene el m² más alto de Lima?" oninput="updateCharHint(this,'infoTituloHint',80);debouncedPreview()">
+        <span class="char-hint" id="infoTituloHint"></span>
       </div>
       <div class="field">
         <label class="lbl" for="infoTexto">Texto / desarrollo</label>
-        <textarea class="inp" id="infoTexto" rows="4" placeholder="Desarrolla tu mensaje aquí…" oninput="debouncedPreview()"></textarea>
+        <textarea class="inp" id="infoTexto" rows="4" placeholder="Desarrolla tu mensaje aquí…" oninput="updateCharHint(this,'infoTextoHint',300);debouncedPreview()"></textarea>
+        <span class="char-hint" id="infoTextoHint"></span>
       </div>
     </div>
   </div>
 
+  <button class="clear-btn" onclick="clearStorage()">🗑 Limpiar formulario</button>
   <button class="dl-btn" id="dlBtn" onclick="download()">⬇️ Descargar Story para Instagram</button>
 </div>
 
@@ -534,7 +556,7 @@ function getData() {
     op: (venta&&alq) ? 'VENTA / ALQUILER' : alq ? 'ALQUILER' : 'VENTA',
     tipo, distrito: document.getElementById('distrito').value.trim()||'Lima',
     moneda: document.getElementById('moneda').value,
-    precio: document.getElementById('precio').value.trim(),
+    precio: document.getElementById('precio').value.trim().replace(/,/g,''),
     dorm:   hideDets?'':document.getElementById('dorm').value,
     banos:  hideDets?'':document.getElementById('banos').value,
     area:   document.getElementById('area').value,
@@ -542,7 +564,7 @@ function getData() {
     wp:     '964109277',
     desc:   document.getElementById('desc').value.trim(),
     feats,  photoPos: 0.5,
-    precioAnterior: document.getElementById('precioAnterior').value.trim(),
+    precioAnterior: document.getElementById('precioAnterior').value.trim().replace(/,/g,''),
     monedaAnterior: document.getElementById('monedaAnterior').value,
   };
 }
@@ -1141,7 +1163,79 @@ function renderTo(canvas, photo) {
 
 // ── Preview ────────────────────────────────────────────
 let _t=null;
-function debouncedPreview(){clearTimeout(_t);_t=setTimeout(drawPreview,120);}
+// ── Price formatter ───────────────────────────────────
+function formatPrice(el) {
+  const pos = el.selectionStart;
+  const raw = el.value.replace(/[^0-9]/g, '');
+  const formatted = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const diff = formatted.length - el.value.length;
+  el.value = formatted;
+  el.setSelectionRange(pos + diff, pos + diff);
+}
+
+// ── Char hint ─────────────────────────────────────────
+function updateCharHint(el, hintId, limit) {
+  const hint = document.getElementById(hintId);
+  if (!hint) return;
+  const len = el.value.length;
+  hint.textContent = len + ' / ' + limit;
+  hint.classList.toggle('over', len > limit);
+}
+
+// ── Expand preview overlay ────────────────────────────
+function expandPreview() {
+  const mc = document.getElementById('mainCanvas');
+  const ov = document.createElement('div');
+  ov.id = 'previewOverlay';
+  ov.onclick = () => ov.remove();
+  const img = document.createElement('img');
+  img.src = mc.toDataURL('image/jpeg', 0.92);
+  const btn = document.createElement('button');
+  btn.className = 'overlay-close'; btn.textContent = '×'; btn.onclick = e => { e.stopPropagation(); ov.remove(); };
+  ov.appendChild(img); ov.appendChild(btn);
+  document.body.appendChild(ov);
+}
+
+// ── localStorage persistence ──────────────────────────
+const STORAGE_KEY = 'storyCraft_v1';
+const FIELD_IDS = ['distrito','precio','moneda','dorm','banos','area','estac','desc',
+  'tipoProp','monedaAnterior','precioAnterior',
+  'closedDistrito','closedTipo','closedDesc',
+  'contactTagline','infoCategoria','infoTitulo','infoTexto'];
+const CHECK_IDS = ['opVenta','opAlq','cEstac','cTerr','cPisc','cJard','cGym','cSeg','cVista','cAmob','cVParq','cSParq'];
+
+function saveToStorage() {
+  try {
+    const data = { postType, tpl, multiMode };
+    FIELD_IDS.forEach(id => { const el=document.getElementById(id); if(el) data[id]=el.value; });
+    CHECK_IDS.forEach(id => { const el=document.getElementById(id); if(el) data[id]=el.checked; });
+    const radios = document.querySelectorAll('input[name="closedOp"]');
+    radios.forEach(r => { if(r.checked) data['closedOp'] = r.value; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    FIELD_IDS.forEach(id => { const el=document.getElementById(id); if(el && data[id]!=null) el.value=data[id]; });
+    CHECK_IDS.forEach(id => { const el=document.getElementById(id); if(el && data[id]!=null) el.checked=data[id]; });
+    if (data.closedOp) { const r=document.querySelector(`input[name="closedOp"][value="${data.closedOp}"]`); if(r) r.checked=true; }
+    if (data.tpl) setTpl(data.tpl);
+    if (data.multiMode) setMode(data.multiMode);
+    if (data.postType) setPostType(data.postType);
+  } catch(e) {}
+}
+
+function clearStorage() {
+  if (!confirm('¿Borrar todos los datos del formulario?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+function debouncedPreview(){clearTimeout(_t);_t=setTimeout(()=>{drawPreview();saveToStorage();},120);}
 function drawPreview(){
   const mc=document.getElementById('mainCanvas');
   const pp=(multiMode==='slides'&&photoImgs.length>1)?photoImgs[activePhotoIdx()]:(photoImgs.length?photoImgs[0]:null);
@@ -1190,6 +1284,7 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),3200);
 }
 
+loadFromStorage();
 drawPreview();
 </script>
 </body>
