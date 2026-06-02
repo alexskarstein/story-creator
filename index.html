@@ -92,6 +92,10 @@
     .toast.show { transform: translateX(-50%) translateY(0); }
     #mainCanvas { display: none; }
 
+    /* ── District quick-pills ── */
+    .district-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .district-pill { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 12px; font-family: 'Poppins', sans-serif; font-weight: 500; color: var(--navy); background: var(--white); cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .district-pill:active, .district-pill.selected { background: var(--navy); color: var(--white); border-color: var(--navy); }
     /* ── Preview expand ── */
     .preview-tap-wrap { cursor: pointer; position: relative; display: inline-block; }
     .preview-tap-wrap:active { opacity: .85; }
@@ -203,7 +207,21 @@
     <div class="card-title">📍 Ubicación y precio</div>
     <div class="field">
       <label class="lbl" for="distrito">Distrito</label>
-      <input class="inp" type="text" id="distrito" placeholder="Ej: Miraflores, San Isidro…" oninput="debouncedPreview()">
+      <input class="inp" type="text" id="distrito" placeholder="Ej: Miraflores, San Isidro…" oninput="syncDistrictPills();debouncedPreview()">
+      <div class="district-pills" id="districtPills">
+        <button class="district-pill" onclick="pickDistrict('Miraflores')">Miraflores</button>
+        <button class="district-pill" onclick="pickDistrict('San Isidro')">San Isidro</button>
+        <button class="district-pill" onclick="pickDistrict('Barranco')">Barranco</button>
+        <button class="district-pill" onclick="pickDistrict('Surco')">Surco</button>
+        <button class="district-pill" onclick="pickDistrict('La Molina')">La Molina</button>
+        <button class="district-pill" onclick="pickDistrict('San Borja')">San Borja</button>
+        <button class="district-pill" onclick="pickDistrict('Magdalena')">Magdalena</button>
+        <button class="district-pill" onclick="pickDistrict('Pueblo Libre')">Pueblo Libre</button>
+        <button class="district-pill" onclick="pickDistrict('Jesús María')">Jesús María</button>
+        <button class="district-pill" onclick="pickDistrict('Chorrillos')">Chorrillos</button>
+        <button class="district-pill" onclick="pickDistrict('San Miguel')">San Miguel</button>
+        <button class="district-pill" onclick="pickDistrict('Surquillo')">Surquillo</button>
+      </div>
     </div>
     <div class="field">
       <label class="lbl" for="precio">Precio</label>
@@ -282,7 +300,21 @@
       </div>
       <div class="field">
         <label class="lbl" for="closedDistrito">Distrito</label>
-        <input class="inp" type="text" id="closedDistrito" placeholder="Ej: Miraflores" oninput="debouncedPreview()">
+        <input class="inp" type="text" id="closedDistrito" placeholder="Ej: Miraflores" oninput="syncDistrictPills();debouncedPreview()">
+        <div class="district-pills" id="closedDistrictPills">
+          <button class="district-pill" onclick="pickClosedDistrict('Miraflores')">Miraflores</button>
+          <button class="district-pill" onclick="pickClosedDistrict('San Isidro')">San Isidro</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Barranco')">Barranco</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Surco')">Surco</button>
+          <button class="district-pill" onclick="pickClosedDistrict('La Molina')">La Molina</button>
+          <button class="district-pill" onclick="pickClosedDistrict('San Borja')">San Borja</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Magdalena')">Magdalena</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Pueblo Libre')">Pueblo Libre</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Jesús María')">Jesús María</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Chorrillos')">Chorrillos</button>
+          <button class="district-pill" onclick="pickClosedDistrict('San Miguel')">San Miguel</button>
+          <button class="district-pill" onclick="pickClosedDistrict('Surquillo')">Surquillo</button>
+        </div>
       </div>
       <div class="field">
         <label class="lbl" for="closedTipo">Tipo de propiedad</label>
@@ -656,16 +688,31 @@ function drawLogo(ctx,x,y,maxW,maxH,align='left',dark=false){
 
 // Vertical stats list (Image 1 style — "3 DORMS", "2 BAÑOS", etc.)
 function statsListV(ctx,d,x,y,col=WHITE,sz=40){
-  const items=[];
-  if(d.dorm  &&+d.dorm >0) items.push(`${d.dorm} DORM${+d.dorm>1?'S':''}`);
-  if(d.banos &&+d.banos>0) items.push(`${d.banos} BAÑO${+d.banos>1?'S':''}`);
-  if(d.area  &&+d.area >0) items.push(`${d.area} M2`);
-  if(d.estac &&+d.estac>0) items.push(`${d.estac} COCHERA${+d.estac>1?'S':''}`);
-  d.feats.slice(0,4).forEach(f=>items.push(f.toUpperCase()));
+  const stats=[];
+  if(d.dorm  &&+d.dorm >0) stats.push(`${d.dorm} DORM${+d.dorm>1?'S':''}`);
+  if(d.banos &&+d.banos>0) stats.push(`${d.banos} BAÑO${+d.banos>1?'S':''}`);
+  if(d.area  &&+d.area >0) stats.push(`${d.area} M2`);
+  if(d.estac &&+d.estac>0) stats.push(`${d.estac} COCHERA${+d.estac>1?'S':''}`);
   ctx.fillStyle=col; ctx.font=`600 ${sz}px ${FB}`; ctx.textAlign='left';
   const lh=sz*1.55;
-  items.forEach((it,i)=>ctx.fillText(it,x,y+i*lh+sz));
-  return items.length*lh;
+  stats.forEach((it,i)=>ctx.fillText(it,x,y+i*lh+sz));
+  let gy = y + stats.length*lh + sz + 12;
+  // Características as small gold badge chips
+  if(d.feats.length){
+    const bsz=28, bpad=18, bh=bsz+16, gap=10;
+    d.feats.forEach(f=>{
+      ctx.font=`600 ${bsz}px ${FB}`;
+      const tw=ctx.measureText(f.toUpperCase()).width;
+      const bw=tw+bpad*2;
+      ctx.fillStyle='rgba(212,175,55,.22)';
+      rrect(ctx,x,gy-bsz,bw,bh,bh/2); ctx.fill();
+      ctx.strokeStyle='rgba(212,175,55,.65)'; ctx.lineWidth=1.5;
+      rrect(ctx,x,gy-bsz,bw,bh,bh/2); ctx.stroke();
+      ctx.fillStyle=col; ctx.fillText(f.toUpperCase(),x+bpad,gy);
+      gy+=bh+gap;
+    });
+  }
+  return gy-y;
 }
 
 // Bordered stats box (Image 2 style)
@@ -675,7 +722,7 @@ function statsBox(ctx,d,x,y,w,dark=false){
   if(d.banos &&+d.banos>0) items.push({ico:'🚿',t:`${d.banos} BAÑO${+d.banos>1?'S':''}`});
   if(d.area  &&+d.area >0) items.push({ico:'📐',t:`${d.area} MTS`});
   if(d.estac &&+d.estac>0) items.push({ico:'🚗',t:`${d.estac} COCHERA${+d.estac>1?'S':''}`});
-  d.feats.slice(0,4).forEach(f=>items.push({ico:'·',t:f.toUpperCase()}));
+  d.feats.slice(0,4).forEach(f=>items.push({ico:'✦',t:f.toUpperCase()}));
   if(!items.length)return 0;
   const col   =dark?WHITE:'#1A1A1A';
   const border=dark?'rgba(255,255,255,.5)':'#1A1A1A';
@@ -1163,6 +1210,25 @@ function renderTo(canvas, photo) {
 
 // ── Preview ────────────────────────────────────────────
 let _t=null;
+// ── District quick-select ─────────────────────────────
+function pickDistrict(name) {
+  document.getElementById('distrito').value = name;
+  syncDistrictPills(); debouncedPreview();
+}
+function pickClosedDistrict(name) {
+  document.getElementById('closedDistrito').value = name;
+  syncDistrictPills(); debouncedPreview();
+}
+function syncDistrictPills() {
+  const val = (document.getElementById('distrito').value||'').trim();
+  document.querySelectorAll('#districtPills .district-pill').forEach(p =>
+    p.classList.toggle('selected', p.textContent === val)
+  );
+  const val2 = (document.getElementById('closedDistrito').value||'').trim();
+  document.querySelectorAll('#closedDistrictPills .district-pill').forEach(p =>
+    p.classList.toggle('selected', p.textContent === val2)
+  );
+}
 // ── Price formatter ───────────────────────────────────
 function formatPrice(el) {
   const pos = el.selectionStart;
@@ -1226,6 +1292,7 @@ function loadFromStorage() {
     if (data.tpl) setTpl(data.tpl);
     if (data.multiMode) setMode(data.multiMode);
     if (data.postType) setPostType(data.postType);
+    syncDistrictPills();
   } catch(e) {}
 }
 
